@@ -15,7 +15,7 @@ jit;
 CREATE TABLE `j_users`
 (
     `id`                VARCHAR(64)  NOT NULL,
-    `email`             VARCHAR(128) NOT NULL,
+    `email`             VARCHAR(254) NOT NULL,
     `password_hash`     VARCHAR(256) NOT NULL,
     `signup_date`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `verified`          TINYINT NOT NULL DEFAULT 0,
