@@ -1,10 +1,10 @@
 package com.nonisystems.jit.service;
 
+import com.nonisystems.jit.common.config.util.UUIDGenerator;
+import com.nonisystems.jit.common.dto.User;
 import com.nonisystems.jit.common.exception.GeneralException;
 import com.nonisystems.jit.domain.entity.UserEntity;
 import com.nonisystems.jit.domain.repository.UserRepository;
-import com.nonisystems.jit.common.dto.User;
-import com.nonisystems.jit.common.config.util.UUIDGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -20,13 +20,19 @@ import java.util.Optional;
 @Validated
 public class UserServiceImpl implements UserService {
 
-    /** User CRUD */
+    /**
+     * User CRUD
+     */
     private final UserRepository userRepository;
 
-    /** create UUID for User ID */
+    /**
+     * create UUID for User ID
+     */
     private final UUIDGenerator uuidGenerator;
 
-    /** encode password */
+    /**
+     * encode password
+     */
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository, UUIDGenerator uuidGenerator, PasswordEncoder passwordEncoder) {
@@ -40,7 +46,7 @@ public class UserServiceImpl implements UserService {
      *
      * @param user input user
      * @return user with generated id
-     * @throws GeneralException 1001 or 3001
+     * @throws GeneralException 400 or 409
      */
     @Transactional
     public User createUser(User user) throws GeneralException {
@@ -48,12 +54,12 @@ public class UserServiceImpl implements UserService {
             log.debug("Creating new user {}", user);
         }
         if (StringUtils.isBlank(user.getEmail())) {
-            throw new GeneralException(1001, "Email is blank");
+            throw new GeneralException(400, "validation.email.required");
         }
         // Check if user exists or not (by email)
         Optional<UserEntity> userOptional = this.userRepository.findByEmail(user.getEmail());
         if (userOptional.isPresent()) {
-            throw new GeneralException(3001, "User is existing");
+            throw new GeneralException(409, "validation.email.existed");
         }
         // Save user
         UserEntity userEntity = new UserEntity();
@@ -72,6 +78,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Get a user by email
+     *
      * @param email user email
      * @throws GeneralException 1002 or 3002
      */
@@ -81,12 +88,12 @@ public class UserServiceImpl implements UserService {
         }
         // Check email
         if (StringUtils.isBlank(email)) {
-            throw new GeneralException(1001, "Email is blank");
+            throw new GeneralException(400, "validation.email.required");
         }
         // Check if user existing
         Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
         UserEntity userEntity = userOptional.orElseThrow(() ->
-                new GeneralException(3002, "User not found"));
+                new GeneralException(404, "validation.email.not_found"));
         // Return user
         User user = new User();
         BeanUtils.copyProperties(userEntity, user);
@@ -97,37 +104,27 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Update a user
+     * Update verified flag of a user
      *
      * @param email User email
-     * @return Updated User
      * @throws GeneralException 1002 or 3002
      */
     @Transactional
-    public User updateUserVerified(String email) throws GeneralException {
+    public void updateUserVerified(String email) throws GeneralException {
         if (log.isDebugEnabled()) {
             log.debug("Updating user verified status to 1 for {}", email);
         }
         // Check id
         if (StringUtils.isBlank(email)) {
-            throw new GeneralException(1002, "email id is blank");
+            throw new GeneralException(400, "validation.email.required");
         }
         // Check if user existing
         Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
         UserEntity userEntity = userOptional.orElseThrow(() ->
-                new GeneralException(3002, "User not found"));
+                new GeneralException(404, "validation.email.not_found"));
         // Update user
         userEntity.setVerified((byte) 1);
         this.userRepository.save(userEntity);
-        // Get the latest user and return
-        Optional<UserEntity> savedUserOptional = this.userRepository.findByEmail(email);
-        UserEntity savedUserEntity = savedUserOptional.orElseThrow(() ->
-                new GeneralException(3002, "User not found"));
-        User user = new User();
-        BeanUtils.copyProperties(savedUserEntity, user);
-        user.setPassword(null);
-        user.setPasswordHash(null);
-        return user;
     }
 
 //

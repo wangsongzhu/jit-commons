@@ -2,6 +2,7 @@ package com.nonisystems.jit.service;
 
 import com.nonisystems.jit.common.config.util.UUIDGenerator;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -29,10 +30,10 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     /**
-     * 生成并保存验证码到 Redis，并返回验证码。
+     * Generate verification code and save to Redis
      *
-     * @param email 用户的email
-     * @return 生成的验证码
+     * @param email email
+     * @return verification code
      */
     public String generateVerificationCode(String email) {
         String verificationCode = this.uuidGenerator.generateUUID(email);
@@ -44,22 +45,21 @@ public class VerificationServiceImpl implements VerificationService {
     }
 
     /**
-     * 验证用户提供的验证码是否有效。
+     * Verify the verification code
      *
-     * @param code 用户提供的验证码
-     * @return 验证成功返回true，否则返回false
+     * @param code verification code
+     * @return email if valid otherwise null
      */
-    public boolean isValidCode(String code) {
+    public String verifyCode(String code) {
         if (log.isDebugEnabled()) {
             log.debug("code: {}", code);
         }
         String key = keyPrefix + code;
         String email = redisTemplate.opsForValue().get(key);
         log.debug("email: {}", email);
-        if (email != null) {
+        if (StringUtils.isNotBlank(email)) {
             redisTemplate.delete(key);
-            return true;
         }
-        return false;
+        return email;
     }
 }

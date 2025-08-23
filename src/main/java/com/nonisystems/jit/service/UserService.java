@@ -9,5 +9,5 @@ public interface UserService {
 
     public User createUser(User user) throws GeneralException;
 
-    public User updateUserVerified(String email) throws GeneralException;
+    public void updateUserVerified(String email) throws GeneralException;
 }

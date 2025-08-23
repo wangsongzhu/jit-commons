@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -66,12 +67,20 @@ public class GlobalExceptionHandler {
         }
         ApiErrors apiErrors = new ApiErrors();
         apiErrors.setStatus(ex.getCode());
-        apiErrors.setMessage(ex.getMessage());
+
+        // Get message using message code
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        log.debug("currentLocale: {}", currentLocale);
+        String errorMessage = messageSource.getMessage(ex.getMessageCode(), null, currentLocale);
+        apiErrors.setMessage(errorMessage);
 
         HttpStatus httpStatus = HttpStatus.PROCESSING;
         if (ex.getCode() == 400) {
             httpStatus = HttpStatus.BAD_REQUEST;
             apiErrors.setError(HttpStatus.BAD_REQUEST.name());
+        } else if (ex.getCode() == 409) {
+            httpStatus = HttpStatus.CONFLICT;
+            apiErrors.setError(HttpStatus.CONFLICT.name());
         } else if (ex.getCode() == 500) {
             httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             apiErrors.setError(HttpStatus.INTERNAL_SERVER_ERROR.name());

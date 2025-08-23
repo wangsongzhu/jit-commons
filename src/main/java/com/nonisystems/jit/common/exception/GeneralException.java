@@ -9,5 +9,5 @@ import lombok.*;
 @ToString
 public class GeneralException extends RuntimeException {
     private int code;
-    private String message;
+    private String messageCode;
 }
