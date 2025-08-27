@@ -12,6 +12,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -46,4 +48,12 @@ public class UserEntity implements Serializable {
 
     @Column(name = "last_login")
     private Timestamp lastLogin;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "j_user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<RoleEntity> roles = new HashSet<>();
 }

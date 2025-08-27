@@ -2,10 +2,13 @@ package com.nonisystems.jit.common.config;
 
 import com.nonisystems.jit.common.config.util.AESEncoder;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
+@ConditionalOnClass({WebMvcConfigurer.class})
 public class NacosSettingEncoderConfiguration {
 
     @Bean

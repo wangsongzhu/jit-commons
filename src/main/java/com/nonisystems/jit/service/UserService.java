@@ -7,7 +7,7 @@ public interface UserService {
 
     public User getUserByEmail(String email) throws GeneralException;
 
-    public User createUser(User user) throws GeneralException;
+    public User createUser(User user, String roleName) throws GeneralException;
 
     public void updateUserVerified(String email) throws GeneralException;
 }

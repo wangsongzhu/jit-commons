@@ -1,6 +1,7 @@
 package com.nonisystems.jit.common.config;
 
 import com.nonisystems.jit.common.config.interceptor.GlobalLocaleInterceptor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -12,6 +13,7 @@ import java.time.Duration;
 import java.util.Locale;
 
 @Configuration
+@ConditionalOnClass({WebMvcConfigurer.class})
 public class LocaleInterceptorConfig implements WebMvcConfigurer {
 
     @Bean
