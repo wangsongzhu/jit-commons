@@ -11,6 +11,7 @@ import java.util.Base64;
 @Slf4j
 public class AESEncoder {
 
+    // TODO May need to put this key in environment variable
     private static final String SECRET_KEY_STRING = "ThisIsMySecretKe"; // 16 bytes
     private static final SecretKey SECRET_KEY;
 
@@ -19,14 +20,14 @@ public class AESEncoder {
     }
 
     /**
-     * 对原文进行对称加密，用于配置项
+     * Encrypt
      *
-     * @param plaintext 原文
-     * @return 加密后的密文，用户配置
+     * @param plaintext target plain text
+     * @return encrypted text
      */
     public String encrypt(String plaintext) {
         if (log.isDebugEnabled()) {
-            log.debug("plaintext: " + plaintext);
+            log.debug("plaintext: {}", plaintext);
         }
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
@@ -42,14 +43,14 @@ public class AESEncoder {
     }
 
     /**
-     * 对原文进行对称解密，用于配置项
+     * Decrypt
      *
-     * @param ciphertext 密文
-     * @return 原文
+     * @param ciphertext encrypted text
+     * @return plain text
      */
     public String decrypt(String ciphertext) {
         if (log.isDebugEnabled()) {
-            log.debug("ciphertext: " + ciphertext);
+            log.debug("ciphertext: {}", ciphertext);
         }
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");

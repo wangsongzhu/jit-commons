@@ -7,6 +7,7 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -21,4 +22,5 @@ public class User implements Serializable {
     private Timestamp signupDate;
     private byte verified;
     private Timestamp lastLogin;
+    private Set<Role> roles;
 }

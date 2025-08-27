@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.nonisystems.jit.common.config.SecurityConfig,\
+com.nonisystems.jit.common.config.LocaleInterceptorConfig
