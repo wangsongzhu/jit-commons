@@ -10,4 +10,6 @@ public interface UserService {
     public User createUser(User user, String roleName) throws GeneralException;
 
     public void updateUserVerified(String email) throws GeneralException;
+
+    public void changePassword(String email, String password) throws GeneralException;
 }

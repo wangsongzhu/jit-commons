@@ -29,9 +29,9 @@ public class UserServiceImpl implements UserService {
     private final UUIDGenerator uuidGenerator;
     private final PasswordEncoder passwordEncoder;
 
-    private final UserEntityToUserConverter  userEntityToUserConverter;
+    private final UserEntityToUserConverter userEntityToUserConverter;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, UUIDGenerator uuidGenerator, PasswordEncoder passwordEncoder, UserEntityToUserConverter  userEntityToUserConverter) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, UUIDGenerator uuidGenerator, PasswordEncoder passwordEncoder, UserEntityToUserConverter userEntityToUserConverter) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.uuidGenerator = uuidGenerator;
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     /**
      * Sign Up a new User
      *
-     * @param user input user
+     * @param user     input user
      * @param roleName role name
      * @return user with generated id
      * @throws GeneralException 400 or 409
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
      * Get a user by email
      *
      * @param email user email
-     * @throws GeneralException 1002 or 3002
+     * @throws GeneralException 400, 404
      */
     public User getUserByEmail(String email) throws GeneralException {
         if (log.isDebugEnabled()) {
@@ -113,7 +113,7 @@ public class UserServiceImpl implements UserService {
      * Update verified flag of a user
      *
      * @param email User email
-     * @throws GeneralException 1002 or 3002
+     * @throws GeneralException 400, 404
      */
     @Transactional
     public void updateUserVerified(String email) throws GeneralException {
@@ -133,48 +133,35 @@ public class UserServiceImpl implements UserService {
         this.userRepository.save(userEntity);
     }
 
-//
-//    /**
-//     * Update user's password
-//     *
-//     * @param id User id
-//     * @param user User with changed password
-//     * @return Updated User
-//     * @throws GeneralException 1002 or 3002
-//     */
-//    @Transactional
-//    public UserInfo changePassword(String id, UserInfo user) throws GeneralException {
-//        if (log.isDebugEnabled()) {
-//            log.debug("Updating user with id {}, user details: {}", id, user);
-//        }
-//        // Check id
-//        if (StringUtils.isBlank(id)) {
-//            throw new GeneralException(1002, "User id is blank");
-//        }
-//        if (!StringUtils.equals(user.getNewPassword(), user.getNewPasswordConfirmation())) {
-//            throw new GeneralException(1003, "The password and confirmation password do not match. Please re-enter your password.");
-//        }
-//        // Check if user existing
-//        UserEntity existedUserEntity = this.userRepository.findUserEntityById(id);
-//        if (existedUserEntity == null) {
-//            throw new GeneralException(3002, "User not found");
-//        }
-//        // Check if current password matches
-//        if (!this.passwordEncoder.matches(user.getPassword(), existedUserEntity.getPasswordHash())) {
-//            throw new GeneralException(1004, "The password you entered is incorrect. Please re-enter your password.");
-//        }
-//        // Update user
-//        existedUserEntity.setPasswordHash(this.passwordEncoder.encode(user.getNewPassword()));
-//        this.userRepository.save(existedUserEntity);
-//        // Get the latest user and return
-//        UserEntity savedUserEntity = this.userRepository.findUserEntityById(id);
-//        UserInfo savedUser = this.modelMapper.map(savedUserEntity, UserInfo.class);
-//        if (log.isDebugEnabled()) {
-//            log.debug("Updated user {}", savedUser);
-//        }
-//        return savedUser;
-//    }
-//
+    /**
+     * Update user's password
+     *
+     * @param email    User email
+     * @param password User password
+     * @throws GeneralException 400, 404
+     */
+    @Transactional
+    public void changePassword(String email, String password) throws GeneralException {
+        if (log.isDebugEnabled()) {
+            log.debug("Updating user {} with password {}", email, password);
+        }
+        // Check id
+        if (StringUtils.isBlank(email)) {
+            throw new GeneralException(400, "validation.email.required");
+        }
+        // Check password
+        if (StringUtils.isBlank(password)) {
+            throw new GeneralException(400, "validation.password.required");
+        }
+        // Check if user existing
+        Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
+        UserEntity userEntity = userOptional.orElseThrow(() ->
+                new GeneralException(404, "validation.email.not_found"));
+        // Update user
+        userEntity.setPasswordHash(this.passwordEncoder.encode(password));
+        this.userRepository.save(userEntity);
+    }
+
 //    /**
 //     * Verify login user is valid or not
 //     * @param user login user
