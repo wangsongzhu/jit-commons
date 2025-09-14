@@ -25,7 +25,7 @@ CREATE TABLE `j_users`
     `last_login`        TIMESTAMP COMMENT 'Date and time of last login',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Users';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Users';
 
 -- #################################
 -- ##   Permission Management     ##
@@ -37,7 +37,7 @@ CREATE TABLE `j_roles` (
   `name` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Role name',
   `description` VARCHAR(255) DEFAULT NULL COMMENT 'Role description',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Roles master';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Roles master';
 
 -- User role mapping
 CREATE TABLE `j_user_roles` (
@@ -46,7 +46,7 @@ CREATE TABLE `j_user_roles` (
   PRIMARY KEY (`user_id`,`role_id`),
   FOREIGN KEY (`user_id`) REFERENCES `j_users` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='User role mapping';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='User role mapping';
 
 -- Permissions master
 CREATE TABLE `j_permissions` (
@@ -54,7 +54,7 @@ CREATE TABLE `j_permissions` (
   `name` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Permission name',
   `description` VARCHAR(255) DEFAULT NULL COMMENT 'Permission description',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Permissions master';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Permissions master';
 
 -- Role permissions mapping
 CREATE TABLE `j_role_permissions` (
@@ -63,7 +63,7 @@ CREATE TABLE `j_role_permissions` (
   PRIMARY KEY (`role_id`,`permission_id`),
   FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`permission_id`) REFERENCES `j_permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='Role permissions mapping';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Role permissions mapping';
 
 -- Master data
 INSERT INTO `j_roles` (`name`, `description`) VALUES
@@ -161,25 +161,30 @@ INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
 ((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
 
 
+-- #################################
+-- ##              URL            ##
+-- #################################
 
 -- j_urls table
 CREATE TABLE `j_urls`
 (
     `id`                    VARCHAR(64) NOT NULL,
-    `user_id`               VARCHAR(64) NOT NULL,
-    `name`                  VARCHAR(256),
-    `title`                 VARCHAR(256),
-    `original_url`          TEXT        NOT NULL,
-    `short_url`             VARCHAR(25) NOT NULL,
-    `short_part`            VARCHAR(10) NOT NULL,
-    `expiration_date`       DATETIME  DEFAULT '9999-12-31 23:59:59',
-    `is_click_limited`      BOOLEAN   DEFAULT 0,
-    `click_limit`           INT NULL DEFAULT 0,
-    `editable`              BOOLEAN   DEFAULT 0,
-    `is_password_protected` BOOLEAN   DEFAULT 0,
-    `show_original_url`     BOOLEAN   DEFAULT 1,
-    `created`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `click_count`           INT NULL DEFAULT 0,
+    `user_id`               VARCHAR(64) NOT NULL COMMENT 'User ID',
+    `title`                 VARCHAR(256) COMMENT 'title or header of target URL page',
+    `original_url`          TEXT        NOT NULL COMMENT 'Original URL',
+    `short_url`             VARCHAR(25) NOT NULL COMMENT 'Full short URL',
+    `short_part`            VARCHAR(10) NOT NULL COMMENT 'Short part of short URL',
+    `expiration_date`       DATETIME  DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
+    `is_click_limited`      BOOLEAN   DEFAULT 0 COMMENT '0: Not limited, 1: Click limited',
+    `click_limit`           INT NULL DEFAULT 0 COMMENT 'Click limit of URL',
+    `editable`              BOOLEAN   DEFAULT 0 COMMENT '0: Editable, 1: Not editable',
+    `is_edited`             BOOLEAN   DEFAULT 0 COMMENT '0: Not edited, 1: Edited',
+    `is_password_protected` BOOLEAN   DEFAULT 0 COMMENT '0: Not password protected, 1: Password protected',
+    `show_original_url`     BOOLEAN   DEFAULT 0 COMMENT '0: Show original URL, 1: Hide original URL',
+    `click_count`           INT NULL DEFAULT 0 COMMENT 'Clicked count',
+    `has_qr_code`           BOOLEAN   DEFAULT 0 COMMENT '0: No QR Code, 1: Has QR Code',
+    `created`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
+    `modified`              TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
     UNIQUE INDEX `short_url_UNIQUE` (`short_url` ASC) VISIBLE,
@@ -188,7 +193,7 @@ CREATE TABLE `j_urls`
             REFERENCES `j_users` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='URL table';
 
 -- j_click_records table
 CREATE TABLE `j_click_records`
@@ -203,8 +208,8 @@ CREATE TABLE `j_click_records`
     `device_type`            VARCHAR(256) NULL,
     `platform`               VARCHAR(256) NULL,
     `platform_version`       VARCHAR(256) NULL,
-    `rendering_engine_maker` VARCHAR(256) NULL,
     `platform_maker`         VARCHAR(256) NULL,
+    `rendering_engine_maker` VARCHAR(256) NULL,
     `language`               VARCHAR(256) NULL,
     `geolocation`            VARCHAR(512) NULL,
     PRIMARY KEY (`id`),
@@ -213,21 +218,25 @@ CREATE TABLE `j_click_records`
             REFERENCES `j_urls` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='URL Clicked history table';
+
+-- #################################
+-- ##              Tag            ##
+-- #################################
 
 -- j_tag table
 CREATE TABLE `j_tag`
 (
     `id`      BIGINT       NOT NULL AUTO_INCREMENT,
-    `name`    VARCHAR(256) NOT NULL,
-    `user_id` VARCHAR(64)  NOT NULL,
+    `name`    VARCHAR(256) NOT NULL COMMENT 'Tag name',
+    `user_id` VARCHAR(64)  NOT NULL COMMENT 'User ID',
     PRIMARY KEY (`id`),
     CONSTRAINT `j_tag_user_id_FK`
         FOREIGN KEY (`user_id`)
             REFERENCES `j_users` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) AUTO_INCREMENT = 1000000;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tag of user table';
 
 -- j_url_tag table
 CREATE TABLE `j_url_tag`
@@ -246,20 +255,26 @@ CREATE TABLE `j_url_tag`
             REFERENCES `j_tag` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tag of URL table';
+
+-- #################################
+-- ##            QR Code          ##
+-- #################################
 
 -- j_qr_codes table
 CREATE TABLE `j_qr_codes`
 (
     `id`        BIGINT       NOT NULL AUTO_INCREMENT,
+    `user_id`   VARCHAR(64)  NOT NULL COMMENT 'User ID',
     `url_id`    VARCHAR(64)  NOT NULL,
-    `file_name` VARCHAR(255) NOT NULL,
-    `file_path` VARCHAR(255) NOT NULL,
-    `file_type` VARCHAR(10)  NOT NULL,
-    `width`     INT          NOT NULL,
-    `height`    INT          NOT NULL,
-    `icon_path` VARCHAR(255) NULL,
+    `file_name` VARCHAR(255) NOT NULL COMMENT 'QR Code file name',
+    `file_path` VARCHAR(255) NOT NULL COMMENT 'QR Code file path',
+    `file_type` VARCHAR(10)  NOT NULL COMMENT 'QR Code file type',
+    `width`     INT          NOT NULL COMMENT 'Width of QR Code file',
+    `height`    INT          NOT NULL COMMENT 'Height of QR Code file',
+    `icon_path` VARCHAR(255) NULL COMMENT 'Icon file path',
     `created`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified`  TIMESTAMP,
     PRIMARY KEY (`id`),
     INDEX       `j_qr_codes_url_id_FK_idx` (`url_id` ASC) VISIBLE,
     CONSTRAINT `j_qr_codes_url_id_FK`
@@ -267,4 +282,4 @@ CREATE TABLE `j_qr_codes`
             REFERENCES `j_urls` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) AUTO_INCREMENT = 1000000;;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT = 1000000 COMMENT='QR Code table';

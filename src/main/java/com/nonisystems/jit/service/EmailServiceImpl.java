@@ -1,13 +1,9 @@
 package com.nonisystems.jit.service;
 
-import java.util.Properties;
-
-import com.nonisystems.jit.common.config.util.AESEncoder;
-import jakarta.mail.*;
-import jakarta.mail.internet.InternetAddress;
+import com.nonisystems.jit.service.props.EmailProperties;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,40 +16,14 @@ import org.thymeleaf.context.Context;
 @RefreshScope
 public class EmailServiceImpl implements EmailService {
 
-    @Value("${spring.mail.username}")
-    private String username;
-
-//    @Value("${mail.username}")
-//    private String username;
-//
-//    @Value("${mail.password}")
-//    private String password;
-//
-//    @Value("${mail.smtp.auth}")
-//    private String auth;
-//
-//    @Value("${mail.smtp.starttls.enable}")
-//    private String starttlsEnable;
-//
-//    @Value("${mail.smtp.starttls.required}")
-//    private String starttlsRequired;
-//
-//    @Value("${mail.smtp.host}")
-//    private String host;
-//
-//    @Value("${mail.smtp.port}")
-//    private String port;
-
-    private final AESEncoder aesEncoder;
-
     private final JavaMailSender mailSender;
-
     private final TemplateEngine templateEngine;
+    private final EmailProperties emailProperties;
 
-    public EmailServiceImpl(AESEncoder aesEncoder, JavaMailSender mailSender, TemplateEngine templateEngine) {
-        this.aesEncoder = aesEncoder;
+    public EmailServiceImpl(JavaMailSender mailSender, TemplateEngine templateEngine, EmailProperties emailProperties) {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
+        this.emailProperties = emailProperties;
     }
 
     /**
@@ -72,7 +42,7 @@ public class EmailServiceImpl implements EmailService {
 
             helper.setTo(to);
             helper.setSubject(subject);
-            helper.setFrom(username);
+            helper.setFrom(this.emailProperties.getUsername());
 
             String htmlContent = templateEngine.process(templateName, context);
             helper.setText(htmlContent, isHtml);

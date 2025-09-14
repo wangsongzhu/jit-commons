@@ -95,12 +95,19 @@ public class GlobalExceptionHandler {
         Locale currentLocale = LocaleContextHolder.getLocale();
         log.debug("currentLocale: {}", currentLocale);
         String errorMessage = messageSource.getMessage(ex.getMessageCode(), null, currentLocale);
+        log.debug("errorMessage: {}", errorMessage);
         apiErrors.setMessage(errorMessage);
 
         HttpStatus httpStatus = HttpStatus.PROCESSING;
         if (ex.getCode() == 400) {
             httpStatus = HttpStatus.BAD_REQUEST;
             apiErrors.setError(HttpStatus.BAD_REQUEST.name());
+        } else if (ex.getCode() == 401) {
+            httpStatus = HttpStatus.UNAUTHORIZED;
+            apiErrors.setError(HttpStatus.UNAUTHORIZED.name());
+        } else if (ex.getCode() == 403) {
+            httpStatus = HttpStatus.FORBIDDEN;
+            apiErrors.setError(HttpStatus.FORBIDDEN.name());
         } else if (ex.getCode() == 409) {
             httpStatus = HttpStatus.CONFLICT;
             apiErrors.setError(HttpStatus.CONFLICT.name());
