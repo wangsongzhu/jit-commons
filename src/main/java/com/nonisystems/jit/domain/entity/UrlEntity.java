@@ -17,6 +17,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -73,6 +74,9 @@ public class UrlEntity implements Serializable {
     @Column(name = "click_count")
     private Long clickCount;
 
+    @Column(name = "has_qr_code")
+    private Boolean hasQrCode;
+
     @CreationTimestamp
     @Column(name = "created")
     private Timestamp created;
@@ -99,12 +103,19 @@ public class UrlEntity implements Serializable {
     /**
      * URL Tags information
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "url")
-    private List<UrlTagEntity> tags = new ArrayList<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "j_url_tag",
+            joinColumns = @JoinColumn(name = "url_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    private Set<TagEntity> tags;
 
     /**
      * QR code
      */
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "url")
-    private QrCodeEntity qrCode;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "url")
+    private List<QrCodeEntity> qrCodes = new ArrayList<>();
 }

@@ -6,12 +6,17 @@ import jakarta.validation.constraints.Size;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UrlRepository extends CrudRepository<UrlEntity, Long> {
 
-    UrlEntity findById(@Size(max = 64) String id);
+    Optional<UrlEntity> findById(@Size(max = 64) String id);
 
-    UrlEntity findByShortUrl(@NotNull @Size(max = 25) String shortUrl);
+    Optional<UrlEntity> findByShortUrl(@NotNull @Size(max = 25) String shortUrl);
 
     List<UrlEntity> findAllByUserId(String userId);
+
+    void deleteById(String id);
+
+    void deleteByUserId(String userId);
 }

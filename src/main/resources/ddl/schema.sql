@@ -182,6 +182,7 @@ CREATE TABLE `j_urls`
     `is_password_protected` BOOLEAN   DEFAULT 0 COMMENT '0: Not password protected, 1: Password protected',
     `show_original_url`     BOOLEAN   DEFAULT 0 COMMENT '0: Show original URL, 1: Hide original URL',
     `click_count`           INT NULL DEFAULT 0 COMMENT 'Clicked count',
+    `has_qr_code`           BOOLEAN   DEFAULT 0 COMMENT '0: No QR Code, 1: Has QR Code',
     `created`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
     `modified`              TIMESTAMP,
     PRIMARY KEY (`id`),
@@ -264,6 +265,7 @@ CREATE TABLE `j_url_tag`
 CREATE TABLE `j_qr_codes`
 (
     `id`        BIGINT       NOT NULL AUTO_INCREMENT,
+    `user_id`   VARCHAR(64)  NOT NULL COMMENT 'User ID',
     `url_id`    VARCHAR(64)  NOT NULL,
     `file_name` VARCHAR(255) NOT NULL COMMENT 'QR Code file name',
     `file_path` VARCHAR(255) NOT NULL COMMENT 'QR Code file path',

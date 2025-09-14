@@ -24,7 +24,7 @@ public interface ClickRecordRepository extends CrudRepository<ClickRecordEntity,
      * @param pageable pageable information
      * @return List of ClickRecordEntity
      */
-    Page<ClickRecordEntity> findByUrlId(Long urlId, Pageable pageable);
+    Page<ClickRecordEntity> findByUrlId(String urlId, Pageable pageable);
 
     /**
      * Delete all ClickRecordEntity by urlId

@@ -2,9 +2,11 @@ package com.nonisystems.jit.common.converter;
 
 import com.nonisystems.jit.common.dto.Permission;
 import com.nonisystems.jit.common.dto.Role;
+import com.nonisystems.jit.common.dto.Tag;
 import com.nonisystems.jit.common.dto.User;
 import com.nonisystems.jit.domain.entity.PermissionEntity;
 import com.nonisystems.jit.domain.entity.RoleEntity;
+import com.nonisystems.jit.domain.entity.TagEntity;
 import com.nonisystems.jit.domain.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -15,7 +17,7 @@ import java.util.Set;
 
 @Slf4j
 @Component
-public class UserEntityToUserConverter {
+public class UserEntityConverter {
 
     public User convert(UserEntity userEntity) {
         User user = new User();
@@ -45,5 +47,11 @@ public class UserEntityToUserConverter {
         }
 
         return user;
+    }
+
+    public Tag convert(TagEntity tagEntity) {
+        Tag tag = new Tag();
+        BeanUtils.copyProperties(tagEntity, tag);
+        return tag;
     }
 }

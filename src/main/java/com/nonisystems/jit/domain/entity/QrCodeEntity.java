@@ -29,7 +29,12 @@ public class QrCodeEntity implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "user_id", updatable = false)
+    private UserEntity user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "url_id", updatable = false)
     private UrlEntity url;
@@ -68,5 +73,4 @@ public class QrCodeEntity implements Serializable {
     @UpdateTimestamp
     @Column(name = "modified")
     private Timestamp modified;
-
 }

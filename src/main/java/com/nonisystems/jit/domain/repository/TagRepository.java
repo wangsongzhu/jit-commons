@@ -6,11 +6,13 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.Optional;
+
 public interface TagRepository extends CrudRepository<TagEntity, Long> {
 
-    TagEntity getTagEntityByUser(UserEntity user);
+    Optional<TagEntity> getTagEntityByUser(UserEntity user);
 
-    TagEntity getTagEntityByUserAndName(UserEntity user, @NotNull @Size(max = 256) String name);
+    Optional<TagEntity> getTagEntityByUserAndName(UserEntity user, @NotNull @Size(max = 256) String name);
 
-    TagEntity getTagEntityById(Long id);
+    Optional<TagEntity> getTagEntityById(Long id);
 }

@@ -11,8 +11,7 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -30,7 +29,7 @@ public class TagEntity implements Serializable {
 
     @NotNull
     @Size(max = 256)
-    @Column(name = "name")
+    @Column(name = "name", nullable = false)
     private String name;
 
     /**
@@ -38,12 +37,13 @@ public class TagEntity implements Serializable {
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "user_id", updatable = false)
+    @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private UserEntity user;
 
     /**
      * URL Tags information
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "tag")
-    private List<UrlTagEntity> urls = new ArrayList<>();
+    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "tags")
+    private Set<UrlEntity> urls;
 }

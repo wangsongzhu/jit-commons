@@ -1,12 +1,15 @@
 package com.nonisystems.jit.service;
 
-import com.nonisystems.jit.common.converter.UserEntityToUserConverter;
 import com.nonisystems.jit.common.config.util.UUIDGenerator;
+import com.nonisystems.jit.common.converter.UserEntityConverter;
+import com.nonisystems.jit.common.dto.Tag;
 import com.nonisystems.jit.common.dto.User;
 import com.nonisystems.jit.common.exception.GeneralException;
 import com.nonisystems.jit.domain.entity.RoleEntity;
+import com.nonisystems.jit.domain.entity.TagEntity;
 import com.nonisystems.jit.domain.entity.UserEntity;
 import com.nonisystems.jit.domain.repository.RoleRepository;
+import com.nonisystems.jit.domain.repository.TagRepository;
 import com.nonisystems.jit.domain.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -25,18 +28,20 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TagRepository tagRepository;
 
     private final UUIDGenerator uuidGenerator;
     private final PasswordEncoder passwordEncoder;
 
-    private final UserEntityToUserConverter userEntityToUserConverter;
+    private final UserEntityConverter userEntityConverter;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, UUIDGenerator uuidGenerator, PasswordEncoder passwordEncoder, UserEntityToUserConverter userEntityToUserConverter) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, TagRepository tagRepository, UUIDGenerator uuidGenerator, PasswordEncoder passwordEncoder, UserEntityConverter userEntityConverter) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.tagRepository = tagRepository;
         this.uuidGenerator = uuidGenerator;
         this.passwordEncoder = passwordEncoder;
-        this.userEntityToUserConverter = userEntityToUserConverter;
+        this.userEntityConverter = userEntityConverter;
     }
 
     /**
@@ -48,6 +53,7 @@ public class UserServiceImpl implements UserService {
      * @throws GeneralException 400 or 409
      */
     @Transactional
+    @Override
     public User createUser(User user, String roleName) throws GeneralException {
         if (log.isDebugEnabled()) {
             log.debug("Creating new user {}", user);
@@ -73,7 +79,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setRoles(Collections.singleton(roleOptional.get()));
         UserEntity savedUserEntity = this.userRepository.save(userEntity);
         // Get the latest user and return
-        User savedUser = this.userEntityToUserConverter.convert(savedUserEntity);
+        User savedUser = this.userEntityConverter.convert(savedUserEntity);
         if (log.isDebugEnabled()) {
             log.debug("Created new user {}", savedUser);
         }
@@ -86,6 +92,7 @@ public class UserServiceImpl implements UserService {
      * @param email user email
      * @throws GeneralException 400, 404
      */
+    @Override
     public User getUserByEmail(String email) throws GeneralException {
         if (log.isDebugEnabled()) {
             log.debug("Getting user by email {}", email);
@@ -102,7 +109,7 @@ public class UserServiceImpl implements UserService {
             log.debug("Found userEntity {}", userEntity);
         }
         // Return user
-        User user = this.userEntityToUserConverter.convert(userEntity);
+        User user = this.userEntityConverter.convert(userEntity);
         if (log.isDebugEnabled()) {
             log.debug("Found user {}", user);
         }
@@ -116,6 +123,7 @@ public class UserServiceImpl implements UserService {
      * @throws GeneralException 400, 404
      */
     @Transactional
+    @Override
     public void updateUserVerified(String email) throws GeneralException {
         if (log.isDebugEnabled()) {
             log.debug("Updating user verified status to 1 for {}", email);
@@ -141,6 +149,7 @@ public class UserServiceImpl implements UserService {
      * @throws GeneralException 400, 404
      */
     @Transactional
+    @Override
     public void changePassword(String email, String password) throws GeneralException {
         if (log.isDebugEnabled()) {
             log.debug("Updating user {} with password {}", email, password);
@@ -160,6 +169,30 @@ public class UserServiceImpl implements UserService {
         // Update user
         userEntity.setPasswordHash(this.passwordEncoder.encode(password));
         this.userRepository.save(userEntity);
+    }
+
+    /**
+     * Create a tag for a user
+     *
+     * @param tagName tagName
+     * @param email   user email
+     * @return TagEntity created
+     */
+    @Transactional
+    @Override
+    public Tag createTagForUser(String tagName, String email) throws GeneralException {
+        if (log.isDebugEnabled()) {
+            log.debug("Creating new tag {} for user {}", tagName, email);
+        }
+        Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
+        UserEntity userEntity = userOptional.orElseThrow(() ->
+                new GeneralException(404, "validation.email.not_found"));
+
+        TagEntity tag = new TagEntity();
+        tag.setName(tagName);
+        tag.setUser(userEntity);
+        TagEntity tagEntity = tagRepository.save(tag);
+        return this.userEntityConverter.convert(tagEntity);
     }
 
 //    /**
