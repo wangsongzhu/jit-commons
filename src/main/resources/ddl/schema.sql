@@ -172,8 +172,8 @@ CREATE TABLE `j_urls`
     `user_id`               VARCHAR(64) NOT NULL COMMENT 'User ID',
     `title`                 VARCHAR(256) COMMENT 'title or header of target URL page',
     `original_url`          TEXT        NOT NULL COMMENT 'Original URL',
-    `short_url`             VARCHAR(25) NOT NULL COMMENT 'Full short URL',
-    `short_part`            VARCHAR(10) NOT NULL COMMENT 'Short part of short URL',
+    `domain_url`            VARCHAR(25) NOT NULL COMMENT 'Domain URL',
+    `short_url`             VARCHAR(10) NOT NULL COMMENT 'Short part of short URL',
     `expiration_date`       DATETIME  DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
     `is_click_limited`      BOOLEAN   DEFAULT 0 COMMENT '0: Not limited, 1: Click limited',
     `click_limit`           INT NULL DEFAULT 0 COMMENT 'Click limit of URL',
@@ -184,11 +184,11 @@ CREATE TABLE `j_urls`
     `click_count`           INT NULL DEFAULT 0 COMMENT 'Clicked count',
     `has_qr_code`           BOOLEAN   DEFAULT 0 COMMENT '0: No QR Code, 1: Has QR Code',
     `created`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
-    `modified`              TIMESTAMP,
+    `modified`              TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
     UNIQUE INDEX `short_url_UNIQUE` (`short_url` ASC) VISIBLE,
-    CONSTRAINT `j_users_id_FK`
+    CONSTRAINT `j_urls_users_id_FK`
         FOREIGN KEY (`user_id`)
             REFERENCES `j_users` (`id`)
             ON DELETE NO ACTION
@@ -213,7 +213,7 @@ CREATE TABLE `j_click_records`
     `language`               VARCHAR(256) NULL,
     `geolocation`            VARCHAR(512) NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `j_urls_id_FK`
+    CONSTRAINT `j_click_records_urls_id_FK`
         FOREIGN KEY (`url_id`)
             REFERENCES `j_urls` (`id`)
             ON DELETE NO ACTION
@@ -274,7 +274,7 @@ CREATE TABLE `j_qr_codes`
     `height`    INT          NOT NULL COMMENT 'Height of QR Code file',
     `icon_path` VARCHAR(255) NULL COMMENT 'Icon file path',
     `created`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `modified`  TIMESTAMP,
+    `modified`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     INDEX       `j_qr_codes_url_id_FK_idx` (`url_id` ASC) VISIBLE,
     CONSTRAINT `j_qr_codes_url_id_FK`
@@ -283,3 +283,24 @@ CREATE TABLE `j_qr_codes`
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT = 1000000 COMMENT='QR Code table';
+
+-- #################################
+-- ##      Short URL Domains      ##
+-- #################################
+
+-- j_domains table
+CREATE TABLE `j_domains` (
+    `id`         BIGINT NOT NULL AUTO_INCREMENT,
+    `user_id`    VARCHAR(64) NOT NULL COMMENT 'User ID',
+    `name`       VARCHAR(256) NOT NULL COMMENT 'Domain URL',
+    `is_active`  BOOLEAN DEFAULT 0 COMMENT '0: active, 1: inactive',
+    `created`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified`   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `domains_name_UNIQUE` (`name` ASC) VISIBLE,
+    CONSTRAINT `j_domains_users_id_FK`
+        FOREIGN KEY (`user_id`)
+            REFERENCES `j_users` (`id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='Short URL Domains';

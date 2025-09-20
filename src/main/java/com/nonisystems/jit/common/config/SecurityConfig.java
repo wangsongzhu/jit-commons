@@ -26,6 +26,8 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/public/**").permitAll()
+                        // TODO remove this line before production
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers("/jwks.json").permitAll()
                         .anyRequest().authenticated()
                 )

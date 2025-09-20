@@ -42,13 +42,13 @@ public class UrlEntity implements Serializable {
 
     @NotNull
     @Size(max = 25)
-    @Column(name = "short_url", unique = true)
-    private String shortUrl;
+    @Column(name = "domain_url")
+    private String domainUrl;
 
     @NotNull
     @Size(max = 10)
-    @Column(name = "short_part")
-    private String shortPart;
+    @Column(name = "short_url", unique = true)
+    private String shortUrl;
 
     @Column(name = "expiration_date", columnDefinition = "DATETIME  DEFAULT '9999-12-31 23:59:59'")
     private LocalDateTime expirationDate;
