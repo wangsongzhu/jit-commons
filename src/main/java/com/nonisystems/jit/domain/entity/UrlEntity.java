@@ -42,16 +42,22 @@ public class UrlEntity implements Serializable {
 
     @NotNull
     @Size(max = 25)
-    @Column(name = "short_url", unique = true)
-    private String shortUrl;
+    @Column(name = "domain_url")
+    private String domainUrl;
 
     @NotNull
     @Size(max = 10)
-    @Column(name = "short_part")
-    private String shortPart;
+    @Column(name = "short_url", unique = true)
+    private String shortUrl;
 
-    @Column(name = "expiration_date", columnDefinition = "DATETIME  DEFAULT '9999-12-31 23:59:59'")
+    @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
+    @PrePersist
+    public void setExpirationDateIfNull() {
+        if (this.expirationDate == null) {
+            this.expirationDate = LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+        }
+    }
 
     @Column(name = "is_click_limited")
     private Boolean clickLimited;

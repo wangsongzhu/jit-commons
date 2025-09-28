@@ -23,4 +23,5 @@ public class User implements Serializable {
     private byte verified;
     private Timestamp lastLogin;
     private Set<Role> roles;
+    private Set<Domain> domains;
 }

@@ -21,8 +21,8 @@ public class Url implements Serializable {
     private String userId;
     private String title;
     private String originalUrl;
+    private String domainUrl;
     private String shortUrl;
-    private String shortPart;
     private LocalDateTime expirationDate;
     private Boolean clickLimited;
     private Long clickLimit;
