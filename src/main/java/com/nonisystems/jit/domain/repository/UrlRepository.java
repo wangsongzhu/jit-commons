@@ -18,5 +18,7 @@ public interface UrlRepository extends CrudRepository<UrlEntity, Long> {
 
     void deleteById(String id);
 
+    void deleteByShortUrl(String shortUrl);
+
     void deleteByUserId(String userId);
 }

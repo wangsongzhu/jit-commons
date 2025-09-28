@@ -174,7 +174,7 @@ CREATE TABLE `j_urls`
     `original_url`          TEXT        NOT NULL COMMENT 'Original URL',
     `domain_url`            VARCHAR(25) NOT NULL COMMENT 'Domain URL',
     `short_url`             VARCHAR(10) NOT NULL COMMENT 'Short part of short URL',
-    `expiration_date`       DATETIME  DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
+    `expiration_date`       DATETIME  NOT NULL DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
     `is_click_limited`      BOOLEAN   DEFAULT 0 COMMENT '0: Not limited, 1: Click limited',
     `click_limit`           INT NULL DEFAULT 0 COMMENT 'Click limit of URL',
     `editable`              BOOLEAN   DEFAULT 0 COMMENT '0: Editable, 1: Not editable',
