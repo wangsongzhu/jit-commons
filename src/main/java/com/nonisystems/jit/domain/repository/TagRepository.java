@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface TagRepository extends CrudRepository<TagEntity, Long> {
@@ -15,4 +16,8 @@ public interface TagRepository extends CrudRepository<TagEntity, Long> {
     Optional<TagEntity> getTagEntityByUserAndName(UserEntity user, @NotNull @Size(max = 256) String name);
 
     Optional<TagEntity> getTagEntityById(Long id);
+
+    Optional<List<TagEntity>> findAllByUserIdOrderByName(String userId);
+
+    boolean existsByNameAndUser(String name, UserEntity user);
 }

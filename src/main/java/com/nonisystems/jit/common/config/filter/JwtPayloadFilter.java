@@ -1,6 +1,7 @@
 package com.nonisystems.jit.common.config.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nonisystems.jit.common.dto.JwtUserDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,8 +53,9 @@ public class JwtPayloadFilter extends OncePerRequestFilter {
             String subject = (String) claims.get("sub");
             log.debug("subject: {}", subject);
 
+            JwtUserDetails userDetails = new JwtUserDetails(claims, grantedAuthorities);
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                    subject, null, grantedAuthorities
+                    userDetails, null, grantedAuthorities
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

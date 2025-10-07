@@ -29,10 +29,14 @@ public class DomainEntity implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @JsonIgnore
+    @JoinColumn(name = "user_id", updatable = false)
+    private String userId;
+
     @NotNull
     @Size(max = 256)
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "domain_url", nullable = false)
+    private String domainUrl;
 
     @Column(name = "is_active")
     private boolean isActive = true;
@@ -45,8 +49,4 @@ public class DomainEntity implements Serializable {
     @Column(name = "modified")
     private LocalDateTime modified;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    @JoinColumn(name = "user_id", updatable = false)
-    private UserEntity user;
 }

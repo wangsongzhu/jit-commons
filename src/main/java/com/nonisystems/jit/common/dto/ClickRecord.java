@@ -16,7 +16,7 @@ public class ClickRecord implements Serializable {
 
     private Long id;
     private String urlId;
-    private Timestamp clickTime;
+    private String clickTime;
     private String ip;
     private String browser;
     private String browserType;

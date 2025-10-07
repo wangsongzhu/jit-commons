@@ -14,6 +14,6 @@ import java.io.Serializable;
 public class Domain implements Serializable {
 
     private Long id;
-    private String name;
+    private String domainUrl;
     private boolean isActive;
 }

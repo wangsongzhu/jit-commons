@@ -162,6 +162,31 @@ INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
 
 
 -- #################################
+-- ##      Short URL Domains      ##
+-- #################################
+
+-- j_domains table
+CREATE TABLE `j_domains` (
+    `id`         BIGINT NOT NULL AUTO_INCREMENT,
+    `user_id`    VARCHAR(64) COMMENT 'User ID',
+    `domain_url` VARCHAR(128) NOT NULL COMMENT 'Domain URL',
+    `is_active`  BOOLEAN DEFAULT 0 COMMENT '0: inactive, 1: active',
+    `created`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified`   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `user_domain_url_UNIQUE` (`user_id` ASC, `domain_url` ASC) VISIBLE,
+    CONSTRAINT `j_domains_users_id_FK`
+        FOREIGN KEY (`user_id`)
+            REFERENCES `j_users` (`id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI AUTO_INCREMENT = 201010101 COMMENT='Short URL Domains';
+
+-- Master data
+INSERT INTO `j_domains` (`id`, `domain_url`, `is_active`) VALUES
+(1, 'http://jit.io', 1);
+
+-- #################################
 -- ##              URL            ##
 -- #################################
 
@@ -172,15 +197,16 @@ CREATE TABLE `j_urls`
     `user_id`               VARCHAR(64) NOT NULL COMMENT 'User ID',
     `title`                 VARCHAR(256) COMMENT 'title or header of target URL page',
     `original_url`          TEXT        NOT NULL COMMENT 'Original URL',
-    `domain_url`            VARCHAR(25) NOT NULL COMMENT 'Domain URL',
+    `domain_url_id`         BIGINT NOT NULL COMMENT 'Domain URL ID',
     `short_url`             VARCHAR(10) NOT NULL COMMENT 'Short part of short URL',
+    `full_short_url`        VARCHAR(138) NOT NULL COMMENT 'Full short URL',
     `expiration_date`       DATETIME  NOT NULL DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
     `is_click_limited`      BOOLEAN   DEFAULT 0 COMMENT '0: Not limited, 1: Click limited',
     `click_limit`           INT NULL DEFAULT 0 COMMENT 'Click limit of URL',
-    `editable`              BOOLEAN   DEFAULT 0 COMMENT '0: Editable, 1: Not editable',
+    `editable`              BOOLEAN   DEFAULT 0 COMMENT '0: Not editable, 1: Editable',
     `is_edited`             BOOLEAN   DEFAULT 0 COMMENT '0: Not edited, 1: Edited',
     `is_password_protected` BOOLEAN   DEFAULT 0 COMMENT '0: Not password protected, 1: Password protected',
-    `show_original_url`     BOOLEAN   DEFAULT 0 COMMENT '0: Show original URL, 1: Hide original URL',
+    `show_original_url`     BOOLEAN   DEFAULT 0 COMMENT '0: Hide original URL, 1: Show original URL',
     `click_count`           INT NULL DEFAULT 0 COMMENT 'Clicked count',
     `has_qr_code`           BOOLEAN   DEFAULT 0 COMMENT '0: No QR Code, 1: Has QR Code',
     `created`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
@@ -191,6 +217,11 @@ CREATE TABLE `j_urls`
     CONSTRAINT `j_urls_users_id_FK`
         FOREIGN KEY (`user_id`)
             REFERENCES `j_users` (`id`)
+            ON DELETE NO ACTION
+            ON UPDATE NO ACTION,
+    CONSTRAINT `j_urls_domain_url_id_FK`
+        FOREIGN KEY (`domain_url_id`)
+            REFERENCES `j_domains` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='URL table';
@@ -236,7 +267,7 @@ CREATE TABLE `j_tag`
             REFERENCES `j_users` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tag of user table';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT = 502030301 COMMENT='Tag of user table';
 
 -- j_url_tag table
 CREATE TABLE `j_url_tag`
@@ -282,25 +313,4 @@ CREATE TABLE `j_qr_codes`
             REFERENCES `j_urls` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT = 1000000 COMMENT='QR Code table';
-
--- #################################
--- ##      Short URL Domains      ##
--- #################################
-
--- j_domains table
-CREATE TABLE `j_domains` (
-    `id`         BIGINT NOT NULL AUTO_INCREMENT,
-    `user_id`    VARCHAR(64) NOT NULL COMMENT 'User ID',
-    `name`       VARCHAR(256) NOT NULL COMMENT 'Domain URL',
-    `is_active`  BOOLEAN DEFAULT 0 COMMENT '0: active, 1: inactive',
-    `created`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `modified`   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    UNIQUE INDEX `domains_name_UNIQUE` (`name` ASC) VISIBLE,
-    CONSTRAINT `j_domains_users_id_FK`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `j_users` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='Short URL Domains';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT = 302020201 COMMENT='QR Code table';

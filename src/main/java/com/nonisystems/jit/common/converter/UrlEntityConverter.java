@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,9 +19,26 @@ import java.util.Set;
 @Component
 public class UrlEntityConverter {
 
+    /**
+     * Convert UrlEntity to Url
+     *
+     * @param urlEntity UrlEntity
+     * @return Url
+     */
     public Url convert(UrlEntity urlEntity) {
+
         Url url = new Url();
         BeanUtils.copyProperties(urlEntity, url);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        if (urlEntity.getExpirationDate() != null) {
+            url.setExpirationDate(urlEntity.getExpirationDate().format(formatter));
+        }
+        if (urlEntity.getCreated() != null) {
+            url.setCreated(urlEntity.getCreated().toLocalDateTime().format(formatter));
+        }
+        if (urlEntity.getModified() != null) {
+            url.setModified(urlEntity.getModified().toLocalDateTime().format(formatter));
+        }
 
         List<Tag> tags = new ArrayList<>();
         Set<TagEntity> tagEntities = urlEntity.getTags();
@@ -40,6 +58,12 @@ public class UrlEntityConverter {
             for (QrCodeEntity qrCodeEntity : qrCodeEntities) {
                 QrCode qrCode = new QrCode();
                 BeanUtils.copyProperties(qrCodeEntity, qrCode);
+                if (qrCodeEntity.getCreated() != null) {
+                    qrCode.setCreated(qrCodeEntity.getCreated().toLocalDateTime().format(formatter));
+                }
+                if (qrCodeEntity.getModified() != null) {
+                    qrCode.setModified(qrCodeEntity.getModified().toLocalDateTime().format(formatter));
+                }
                 qrCodes.add(qrCode);
             }
             url.setQrCodes(qrCodes);
