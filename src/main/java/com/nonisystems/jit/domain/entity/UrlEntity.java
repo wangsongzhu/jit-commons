@@ -41,14 +41,18 @@ public class UrlEntity implements Serializable {
     private String originalUrl;
 
     @NotNull
-    @Size(max = 25)
-    @Column(name = "domain_url")
-    private String domainUrl;
+    @Column(name = "domain_url_id")
+    private Long domainUrlId;
 
     @NotNull
     @Size(max = 10)
     @Column(name = "short_url", unique = true)
     private String shortUrl;
+
+    @NotNull
+    @Size(max = 138)
+    @Column(name = "full_short_url", unique = true)
+    private String fullShortUrl;
 
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 
 @Data
 @NoArgsConstructor
@@ -22,6 +21,6 @@ public class QrCode implements Serializable {
     private Integer width;
     private Integer height;
     private String iconPath;
-    private Timestamp created;
-    private Timestamp modified;
+    private String created;
+    private String modified;
 }

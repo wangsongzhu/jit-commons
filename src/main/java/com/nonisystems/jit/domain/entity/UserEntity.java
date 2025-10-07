@@ -71,9 +71,5 @@ public class UserEntity implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<TagEntity> createdTags;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DomainEntity> domains = new HashSet<>();
+    private Set<TagEntity> tags;
 }
