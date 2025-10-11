@@ -2,8 +2,6 @@ package com.nonisystems.jit.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +9,7 @@ import lombok.ToString;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -21,44 +17,40 @@ import java.util.Set;
 @ToString
 @Entity
 @DynamicUpdate
-@Table(name = "j_tag")
-public class TagEntity implements Serializable {
+@Table(name = "j_url_tag")
+public class UrlTagEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @NotNull
-    @Size(max = 256)
-    @Column(name = "name", nullable = false)
-    private String name;
-
     /**
-     * (FK) user information
+     * (FK) URL information
      */
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
-    private UserEntity user;
+    @JoinColumn(name = "url_id", nullable = false, updatable = false)
+    private UrlEntity url;
 
     /**
-     * URL Tags information
+     * (FK) Tag information
      */
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<UrlTagEntity> tagUrls = new HashSet<>();
+    @JoinColumn(name = "tag_id", nullable = false, updatable = false)
+    private TagEntity tag;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TagEntity that = (TagEntity) o;
+        UrlTagEntity that = (UrlTagEntity) o;
         return id != null && id.equals(that.id);
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : Objects.hash(name);
+        return id != null ? id.hashCode() : Objects.hash(url, tag);
     }
 }

@@ -4,12 +4,12 @@ import com.nonisystems.jit.domain.entity.TagEntity;
 import com.nonisystems.jit.domain.entity.UserEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface TagRepository extends CrudRepository<TagEntity, Long> {
+public interface TagRepository extends JpaRepository<TagEntity, Long> {
 
     Optional<TagEntity> getTagEntityByUser(UserEntity user);
 
@@ -20,4 +20,8 @@ public interface TagRepository extends CrudRepository<TagEntity, Long> {
     Optional<List<TagEntity>> findAllByUserIdOrderByName(String userId);
 
     boolean existsByNameAndUser(String name, UserEntity user);
+
+    void deleteById(Long id);
+
+    void deleteByUserId(String userId);
 }

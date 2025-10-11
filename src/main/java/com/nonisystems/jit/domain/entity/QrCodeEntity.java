@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -73,4 +74,17 @@ public class QrCodeEntity implements Serializable {
     @UpdateTimestamp
     @Column(name = "modified")
     private Timestamp modified;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QrCodeEntity that = (QrCodeEntity) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : Objects.hash(user, url);
+    }
 }
