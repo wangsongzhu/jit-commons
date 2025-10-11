@@ -1,11 +1,11 @@
 package com.nonisystems.jit.domain.repository;
 
 import com.nonisystems.jit.domain.entity.QrCodeEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface QrCodeRepository extends CrudRepository<QrCodeEntity, Long> {
+public interface QrCodeRepository extends JpaRepository<QrCodeEntity, Long> {
 
     List<QrCodeEntity> findByUrlId(String urlId);
 

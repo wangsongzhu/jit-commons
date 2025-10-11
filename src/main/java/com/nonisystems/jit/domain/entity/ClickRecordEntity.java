@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -82,4 +83,17 @@ public class ClickRecordEntity implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "url_id", updatable = false)
     private UrlEntity url;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClickRecordEntity that = (ClickRecordEntity) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : Objects.hash(ip, clickTime);
+    }
 }

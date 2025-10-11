@@ -14,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
 @NoArgsConstructor
@@ -49,4 +50,16 @@ public class DomainEntity implements Serializable {
     @Column(name = "modified")
     private LocalDateTime modified;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DomainEntity that = (DomainEntity) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : Objects.hash(userId, domainUrl);
+    }
 }

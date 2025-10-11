@@ -15,9 +15,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
@@ -56,6 +54,7 @@ public class UrlEntity implements Serializable {
 
     @Column(name = "expiration_date")
     private LocalDateTime expirationDate;
+
     @PrePersist
     public void setExpirationDateIfNull() {
         if (this.expirationDate == null) {
@@ -113,19 +112,25 @@ public class UrlEntity implements Serializable {
     /**
      * URL Tags information
      */
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "j_url_tag",
-            joinColumns = @JoinColumn(name = "url_id"),
-            inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private Set<TagEntity> tags;
+    @OneToMany(mappedBy = "url", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<UrlTagEntity> urlTags = new HashSet<>();
 
     /**
      * QR code
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true, mappedBy = "url")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "url")
     private List<QrCodeEntity> qrCodes = new ArrayList<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UrlEntity that = (UrlEntity) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : Objects.hash(originalUrl, domainUrlId, shortUrl);
+    }
 }

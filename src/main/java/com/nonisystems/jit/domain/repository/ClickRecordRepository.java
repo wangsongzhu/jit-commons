@@ -3,11 +3,11 @@ package com.nonisystems.jit.domain.repository;
 import com.nonisystems.jit.domain.entity.ClickRecordEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ClickRecordRepository extends CrudRepository<ClickRecordEntity, Long> {
+public interface ClickRecordRepository extends JpaRepository<ClickRecordEntity, Long> {
 
     /**
      * Search ClickRecordEntity list by urlId
