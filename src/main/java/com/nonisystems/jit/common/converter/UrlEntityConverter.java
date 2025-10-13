@@ -1,5 +1,6 @@
 package com.nonisystems.jit.common.converter;
 
+import com.nonisystems.jit.common.config.util.Util;
 import com.nonisystems.jit.common.dto.QrCode;
 import com.nonisystems.jit.common.dto.Tag;
 import com.nonisystems.jit.common.dto.Url;
@@ -15,7 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -36,6 +36,7 @@ public class UrlEntityConverter {
         Url url = new Url();
         log.debug("copy properties from url entity to url: {}", urlEntity.getId());
         BeanUtils.copyProperties(urlEntity, url);
+        url.setOriginalDomain(Util.extractDomain(urlEntity.getOriginalUrl()));
         log.debug("complete copying properties from url entity to url");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
