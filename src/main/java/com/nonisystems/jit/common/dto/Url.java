@@ -19,6 +19,7 @@ public class Url implements Serializable {
     private String userId;
     private String title;
     private String originalUrl;
+    private String originalDomain;
     private Long domainUrlId;
     private String domainUrl;
     private String shortUrl;

@@ -3,7 +3,8 @@ package com.nonisystems.jit.domain.repository;
 import com.nonisystems.jit.domain.entity.UrlEntity;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import org.springframework.data.jpa.repository.EntityGraph;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -15,9 +16,10 @@ public interface UrlRepository extends JpaRepository<UrlEntity, Long> {
 
     Optional<UrlEntity> findByShortUrl(@NotNull @Size(max = 25) String shortUrl);
 
+    // TODO to be deleted
     List<UrlEntity> findAllByUserId(String userId);
 
-    List<UrlEntity> findAllByUserIdOrderByCreatedDesc(String userId);
+    Page<UrlEntity> findAllByUserId(String userId, Pageable pageable);
 
     void deleteById(String id);
 
