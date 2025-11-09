@@ -36,5 +36,5 @@ public class Url implements Serializable {
     private String created;
     private String modified;
     private List<Tag> tags = new ArrayList<>();
-    private List<QrCode> qrCodes = new ArrayList<>();
+    private QrCode qrCode;
 }

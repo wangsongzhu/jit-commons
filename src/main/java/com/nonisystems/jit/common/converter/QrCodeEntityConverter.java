@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.format.DateTimeFormatter;
+
 @Slf4j
 @Component
 public class QrCodeEntityConverter {
@@ -24,6 +26,16 @@ public class QrCodeEntityConverter {
         UrlEntity urlEntity = qrCodeEntity.getUrl();
         if (urlEntity != null) {
             qrCode.setUrlId(urlEntity.getId());
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        if (qrCodeEntity.getCreated() != null) {
+            qrCode.setCreated(qrCodeEntity.getCreated().toLocalDateTime().format(formatter));
+            log.debug("created: {}", qrCode.getCreated());
+        }
+        if (qrCodeEntity.getModified() != null) {
+            qrCode.setModified(qrCodeEntity.getModified().toLocalDateTime().format(formatter));
+            log.debug("modified: {}", qrCode.getModified());
         }
 
         return qrCode;
