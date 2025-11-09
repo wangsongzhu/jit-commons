@@ -70,22 +70,19 @@ public class UrlEntityConverter {
         }
         url.setTags(tags);
 
-        List<QrCode> qrCodes = new ArrayList<>();
-        List<QrCodeEntity> qrCodeEntities = urlEntity.getQrCodes();
-        if (qrCodeEntities != null && !qrCodeEntities.isEmpty()) {
-            for (QrCodeEntity qrCodeEntity : qrCodeEntities) {
-                log.debug("qrCodeEntity id: {}", qrCodeEntity.getId());
-                QrCode qrCode = new QrCode();
-                BeanUtils.copyProperties(qrCodeEntity, qrCode);
-                if (qrCodeEntity.getCreated() != null) {
-                    qrCode.setCreated(qrCodeEntity.getCreated().toLocalDateTime().format(formatter));
-                }
-                if (qrCodeEntity.getModified() != null) {
-                    qrCode.setModified(qrCodeEntity.getModified().toLocalDateTime().format(formatter));
-                }
-                qrCodes.add(qrCode);
+        QrCodeEntity qrCodeEntity = urlEntity.getQrCode();
+        if (qrCodeEntity != null) {
+            log.debug("qrCodeEntity id: {}", qrCodeEntity.getId());
+            QrCode qrCode = new QrCode();
+            BeanUtils.copyProperties(qrCodeEntity, qrCode);
+            if (qrCodeEntity.getCreated() != null) {
+                qrCode.setCreated(qrCodeEntity.getCreated().toLocalDateTime().format(formatter));
             }
-            url.setQrCodes(qrCodes);
+            if (qrCodeEntity.getModified() != null) {
+                qrCode.setModified(qrCodeEntity.getModified().toLocalDateTime().format(formatter));
+            }
+            url.setQrCode(qrCode);
+            url.setHasQrCode(true);
         }
 
         return url;

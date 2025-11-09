@@ -293,24 +293,70 @@ CREATE TABLE `j_url_tag`
 -- #################################
 
 -- j_qr_codes table
-CREATE TABLE `j_qr_codes`
-(
-    `id`        BIGINT       NOT NULL AUTO_INCREMENT,
-    `user_id`   VARCHAR(64)  NOT NULL COMMENT 'User ID',
-    `url_id`    VARCHAR(64)  NOT NULL,
-    `file_name` VARCHAR(255) NOT NULL COMMENT 'QR Code file name',
-    `file_path` VARCHAR(255) NOT NULL COMMENT 'QR Code file path',
-    `file_type` VARCHAR(10)  NOT NULL COMMENT 'QR Code file type',
-    `width`     INT          NOT NULL COMMENT 'Width of QR Code file',
-    `height`    INT          NOT NULL COMMENT 'Height of QR Code file',
-    `icon_path` VARCHAR(255) NULL COMMENT 'Icon file path',
-    `created`   TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `modified`  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+CREATE TABLE `j_qr_codes` (
+    `id` VARCHAR(64) NOT NULL,
+    `user_id` VARCHAR(64) NOT NULL COMMENT 'User ID',
+    `has_url` BOOLEAN DEFAULT 0 COMMENT '0: No Short URL, 1: Has Short URL',
+    `url_id` VARCHAR(64) COMMENT 'Short URL id',
+    `original_url` TEXT COMMENT 'Original URL',
+    `icon_path` VARCHAR(512) COMMENT 'Icon file path',
+    `error_correction_level` CHAR(1) DEFAULT 'Q' COMMENT 'ErrorCorrectionLevel: L, M, Q, H',
+    `image_options_hide_background_dots` BOOLEAN DEFAULT 1 COMMENT 'imageOptions.hideBackgroundDots: 0: false/Show background dots, 1: true/Hide background dots',
+    `image_options_size` DECIMAL(2, 1) DEFAULT 0.4 COMMENT 'imageOptions.imageSize: 0.5, 0.4, 0.3, 0.1',
+    `image_options_margin` INT DEFAULT 10 COMMENT 'imageOptions.margin: 10',
+    `image_options_cross_origin` VARCHAR(15) DEFAULT 'anonymous' COMMENT 'imageOptions.crossOrigin: anonymous, use-credentials',
+    `dots_options_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'dotsOptions.color: #FFFFFF',
+    `dots_options_type` VARCHAR(20) DEFAULT 'square' COMMENT 'dotsOptions.type: dot, square, extra-rounded, rounded, dots, classy, classy-rounded',
+    `corners_square_options_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'cornersSquareOptions.color: #FFFFFF',
+    `corners_square_options_type` VARCHAR(20) DEFAULT 'square' COMMENT 'cornersSquareOptions.type: dot, square, extra-rounded, rounded, dots, classy, classy-rounded',
+    `corners_dot_options_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'cornersDotOptions.color: #FFFFFF',
+    `corners_dot_options_type` VARCHAR(20) DEFAULT 'square' COMMENT 'cornersDotOptions.type: dot, square, extra-rounded, rounded, dots, classy, classy-rounded',
+    `background_options_color` VARCHAR(7) DEFAULT '#FFFFFF' COMMENT 'backgroundOptions.color: #FFFFFF',
+    `background_options_gradient_type` VARCHAR(6) COMMENT 'backgroundOptions.gradient.type: linear, radial',
+    `background_options_gradient_rotation` INT COMMENT 'backgroundOptions.gradient.rotation: 0 to 360',
+    `background_options_gradient_color_from` VARCHAR(7) COMMENT 'backgroundOptions.gradient.colorFrom: #FFFFFF',
+    `background_options_gradient_color_to` VARCHAR(7) COMMENT 'backgroundOptions.gradient.colorTo: #FFFFFF',
+    `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
     PRIMARY KEY (`id`),
-    INDEX       `j_qr_codes_url_id_FK_idx` (`url_id` ASC) VISIBLE,
+
+    INDEX `j_qr_codes_url_id_FK_idx` (`url_id` ASC) VISIBLE,
+
     CONSTRAINT `j_qr_codes_url_id_FK`
         FOREIGN KEY (`url_id`)
-            REFERENCES `j_urls` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT = 302020201 COMMENT='QR Code table';
+        REFERENCES `j_urls` (`id`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION,
+
+    CONSTRAINT `j_qr_codes_users_id_FK`
+        FOREIGN KEY (`user_id`)
+        REFERENCES `j_users` (`id`)
+        ON DELETE NO ACTION
+        ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='QR Code table';
+
+
+--data
+--image
+--errorCorrectionLevel
+--imageOptions.imageSize
+--imageOptions.margin
+--dotsOptions.color
+--dotsOptions.type
+--cornersSquareOptions.color
+--cornersSquareOptions.type
+--
+--cornersDotOptions.color
+--cornersDotOptions.type
+--
+--backgroundOptions.color
+--backgroundOptions.type
+--backgroundOptions.gradient.colorFrom
+--backgroundOptions.gradient.colorTo
+--backgroundOptions.gradient.type
+
+--logoOptions.logoScale
+--logoOptions.logoMargin
+--logoOptions.logoBackgroundColor
+--logoOptions.logoBackgroundTransparent

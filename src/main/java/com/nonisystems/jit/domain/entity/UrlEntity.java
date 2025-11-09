@@ -35,6 +35,7 @@ public class UrlEntity implements Serializable {
     private String title;
 
     @NotNull
+    @Size(max = 4096)
     @Column(name = "original_url")
     private String originalUrl;
 
@@ -118,8 +119,23 @@ public class UrlEntity implements Serializable {
     /**
      * QR code
      */
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, mappedBy = "url")
-    private List<QrCodeEntity> qrCodes = new ArrayList<>();
+    @OneToOne(mappedBy = "url", fetch = FetchType.LAZY)
+    private QrCodeEntity qrCode;
+
+    /**
+     * Set QR code
+     *
+     * @param qrCode QrCodeEntity
+     */
+    public void setQrCode(QrCodeEntity qrCode) {
+        if (this.qrCode != null) {
+            this.qrCode.setUrl(null);
+        }
+        this.qrCode = qrCode;
+        if (qrCode != null) {
+            qrCode.setUrl(this);
+        }
+    }
 
     @Override
     public boolean equals(Object o) {

@@ -2,7 +2,6 @@ package com.nonisystems.jit.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +12,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -26,46 +26,90 @@ import java.util.Objects;
 public class QrCodeEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Size(max = 64)
     @Column(name = "id")
-    private Long id;
+    private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", updatable = false)
     private UserEntity user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(name = "has_url")
+    private Boolean hasUrl;
+
     @JsonIgnore
-    @JoinColumn(name = "url_id", updatable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "url_id", unique = true, nullable = true)
     private UrlEntity url;
 
-    @NotNull
-    @Size(max = 255)
-    @Column(name = "file_name")
-    private String fileName;
+    @Size(max = 4096)
+    @Column(name = "original_url")
+    private String originalUrl;
 
-    @NotNull
-    @Size(max = 255)
-    @Column(name = "file_path")
-    private String filePath;
-
-    @NotNull
-    @Size(max = 10)
-    @Column(name = "file_type")
-    private String fileType;
-
-    @NotNull
-    @Column(name = "width")
-    private Integer width;
-
-    @NotNull
-    @Column(name = "height")
-    private Integer height;
-
-    @Size(max = 255)
+    @Size(max = 512)
     @Column(name = "icon_path")
     private String iconPath;
+
+    @Size(max = 1)
+    @Column(name = "error_correction_level")
+    private String errorCorrectionLevel;
+
+    @Column(name = "image_options_hide_background_dots")
+    private Boolean imageOptionsHideBackgroundDots;
+
+    @Column(name = "image_options_size", precision = 2, scale = 1)
+    private BigDecimal imageOptionsSize;
+
+    @Column(name = "image_options_margin")
+    private Integer imageOptionsMargin;
+
+    @Size(max = 15)
+    @Column(name = "image_options_cross_origin")
+    private String imageOptionsCrossOrigin;
+
+    @Size(max = 7)
+    @Column(name = "dots_options_color")
+    private String dotsOptionsColor;
+
+    @Size(max = 20)
+    @Column(name = "dots_options_type")
+    private String dotsOptionsType;
+
+    @Size(max = 7)
+    @Column(name = "corners_square_options_color")
+    private String cornersSquareOptionsColor;
+
+    @Size(max = 20)
+    @Column(name = "corners_square_options_type")
+    private String cornersSquareOptionsType;
+
+    @Size(max = 7)
+    @Column(name = "corners_dot_options_color")
+    private String cornersDotOptionsColor;
+
+    @Size(max = 20)
+    @Column(name = "corners_dot_options_type")
+    private String cornersDotOptionsType;
+
+    @Size(max = 7)
+    @Column(name = "background_options_color")
+    private String backgroundOptionsColor;
+
+    @Size(max = 6)
+    @Column(name = "background_options_gradient_type")
+    private String backgroundOptionsGradientType;
+
+    @Column(name = "background_options_gradient_rotation")
+    private Integer backgroundOptionsGradientRotation;
+
+    @Size(max = 7)
+    @Column(name = "background_options_gradient_color_from")
+    private String backgroundOptionsGradientColorFrom;
+
+    @Size(max = 7)
+    @Column(name = "background_options_gradient_color_to")
+    private String backgroundOptionsGradientColorTo;
 
     @CreationTimestamp
     @Column(name = "created")
