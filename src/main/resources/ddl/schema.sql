@@ -336,27 +336,21 @@ CREATE TABLE `j_qr_codes` (
         ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='QR Code table';
 
+-- #################################
+-- ##             Logo            ##
+-- #################################
 
---data
---image
---errorCorrectionLevel
---imageOptions.imageSize
---imageOptions.margin
---dotsOptions.color
---dotsOptions.type
---cornersSquareOptions.color
---cornersSquareOptions.type
---
---cornersDotOptions.color
---cornersDotOptions.type
---
---backgroundOptions.color
---backgroundOptions.type
---backgroundOptions.gradient.colorFrom
---backgroundOptions.gradient.colorTo
---backgroundOptions.gradient.type
-
---logoOptions.logoScale
---logoOptions.logoMargin
---logoOptions.logoBackgroundColor
---logoOptions.logoBackgroundTransparent
+-- j_logo table
+CREATE TABLE `j_logo` (
+    `id` VARCHAR(64) NOT NULL,
+    `user_id` VARCHAR(64) NOT NULL COMMENT 'User ID',
+    `logo_option` TINYINT NOT NULL DEFAULT 0 COMMENT '0: URL, 1: File Upload',
+    `url` TEXT COMMENT 'Logo URL',
+    `file_key` VARCHAR(64) COMMENT 'Logo file key',
+    `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
+    `modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `j_logo_users_id_FK` FOREIGN KEY (`user_id`)
+        REFERENCES `j_users` (`id`)
+        ON DELETE NO ACTION ON UPDATE NO ACTION
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='Logo table';
