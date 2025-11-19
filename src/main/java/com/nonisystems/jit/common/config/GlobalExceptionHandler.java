@@ -3,6 +3,7 @@ package com.nonisystems.jit.common.config;
 import com.nonisystems.jit.common.constant.GlobalConstant;
 import com.nonisystems.jit.common.dto.ApiErrors;
 import com.nonisystems.jit.common.exception.GeneralException;
+import com.nonisystems.jit.common.exception.ValidationErrorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -36,15 +37,48 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiErrors> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        Locale currentLocale = LocaleContextHolder.getLocale();
+        log.debug("currentLocale: {}", currentLocale);
+
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
+            String messageKey = error.getDefaultMessage();
+            Object[] arguments = error.getArguments();
+            String errorMessage = messageSource.getMessage(messageKey, arguments, currentLocale);
             errors.put(fieldName, errorMessage);
         });
 
+        ApiErrors apiErrors = new ApiErrors();
+        apiErrors.setStatus(HttpStatus.BAD_REQUEST.value());
+        apiErrors.setError(HttpStatus.BAD_REQUEST.name());
+        String errorMessage = messageSource.getMessage(GlobalConstant.VALIDATION_INPUT_INVALID, null, currentLocale);
+        apiErrors.setMessage(errorMessage);
+        apiErrors.setFieldErrors(errors);
+        return new ResponseEntity<>(apiErrors, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * Validate input (for validation in controllers)
+     *
+     * @param ex ValidationErrorException
+     * @return ApiErrors
+     */
+    @ExceptionHandler(ValidationErrorException.class)
+    public ResponseEntity<ApiErrors> handleValidationErrorExceptions(ValidationErrorException ex) {
         Locale currentLocale = LocaleContextHolder.getLocale();
         log.debug("currentLocale: {}", currentLocale);
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getValidationErrors().forEach((error) -> {
+            // Get field name
+            String fieldName = error.getFieldName();
+            // Get message key and args
+            String messageKey = error.getMessageKey();
+            Object[] args = error.getArgs();
+            String errorMessage = messageSource.getMessage(messageKey, args, currentLocale);
+            errors.put(fieldName, errorMessage);
+        });
 
         ApiErrors apiErrors = new ApiErrors();
         apiErrors.setStatus(HttpStatus.BAD_REQUEST.value());

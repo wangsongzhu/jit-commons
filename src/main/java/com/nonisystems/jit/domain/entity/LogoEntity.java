@@ -39,6 +39,11 @@ public class LogoEntity implements Serializable {
     @Column(name = "logo_option")
     private byte logoOption;
 
+    @NotNull
+    @Size(max = 256)
+    @Column(name = "name")
+    private String name;
+
     @Size(max = 4096)
     @Column(name = "url")
     private String url;
