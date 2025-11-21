@@ -48,6 +48,10 @@ public class LogoEntity implements Serializable {
     @Column(name = "url")
     private String url;
 
+    @Size(max = 256)
+    @Column(name = "file_name")
+    private String fileName;
+
     @Size(max = 64)
     @Column(name = "file_key")
     private String fileKey;
