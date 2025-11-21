@@ -17,6 +17,7 @@ public class Logo implements Serializable {
     private byte logoOption;
     private String name;
     private String url;
+    private String fileName;
     private String fileKey;
     private String created;
     private String modified;

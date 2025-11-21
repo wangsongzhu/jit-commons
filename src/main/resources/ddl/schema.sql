@@ -347,6 +347,7 @@ CREATE TABLE `j_logo` (
     `logo_option` TINYINT NOT NULL DEFAULT 0 COMMENT '0: URL, 1: File Upload',
     `name` VARCHAR(256) NOT NULL COMMENT 'Name of logo',
     `url` TEXT COMMENT 'Logo URL for URL option, or file name for File Upload option',
+    `file_name` VARCHAR(256) COMMENT 'Logo file name',
     `file_key` VARCHAR(64) COMMENT 'Logo file key',
     `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
     `modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
