@@ -1,5 +1,5 @@
 -- create database
-CREATE SCHEMA jit DEFAULT CHARACTER SET utf8mb4;
+CREATE SCHEMA jit DEFAULT CHARACTER SET UTF8MB4;
 
 -- create user
 CREATE USER 'jitadmin'@'%' IDENTIFIED BY 'P@ssw0rd';
@@ -25,7 +25,7 @@ CREATE TABLE `j_users`
     `last_login`        TIMESTAMP COMMENT 'Date and time of last login',
     PRIMARY KEY (`id`),
     UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Users';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Users';
 
 -- #################################
 -- ##   Permission Management     ##
@@ -37,7 +37,7 @@ CREATE TABLE `j_roles` (
   `name` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Role name',
   `description` VARCHAR(255) DEFAULT NULL COMMENT 'Role description',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Roles master';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Roles master';
 
 -- User role mapping
 CREATE TABLE `j_user_roles` (
@@ -46,7 +46,7 @@ CREATE TABLE `j_user_roles` (
   PRIMARY KEY (`user_id`,`role_id`),
   FOREIGN KEY (`user_id`) REFERENCES `j_users` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='User role mapping';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='User role mapping';
 
 -- Permissions master
 CREATE TABLE `j_permissions` (
@@ -54,7 +54,7 @@ CREATE TABLE `j_permissions` (
   `name` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Permission name',
   `description` VARCHAR(255) DEFAULT NULL COMMENT 'Permission description',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Permissions master';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Permissions master';
 
 -- Role permissions mapping
 CREATE TABLE `j_role_permissions` (
@@ -63,7 +63,7 @@ CREATE TABLE `j_role_permissions` (
   PRIMARY KEY (`role_id`,`permission_id`),
   FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`permission_id`) REFERENCES `j_permissions` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Role permissions mapping';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Role permissions mapping';
 
 -- Master data
 INSERT INTO `j_roles` (`name`, `description`) VALUES
@@ -224,7 +224,7 @@ CREATE TABLE `j_urls`
             REFERENCES `j_domains` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='URL table';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='URL table';
 
 -- j_click_records table
 CREATE TABLE `j_click_records`
@@ -249,7 +249,7 @@ CREATE TABLE `j_click_records`
             REFERENCES `j_urls` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='URL Clicked history table';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='URL Clicked history table';
 
 -- #################################
 -- ##              Tag            ##
@@ -267,7 +267,7 @@ CREATE TABLE `j_tag`
             REFERENCES `j_users` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT = 502030301 COMMENT='Tag of user table';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI AUTO_INCREMENT = 502030301 COMMENT='Tag of user table';
 
 -- j_url_tag table
 CREATE TABLE `j_url_tag`
@@ -286,7 +286,7 @@ CREATE TABLE `j_url_tag`
             REFERENCES `j_tag` (`id`)
             ON DELETE NO ACTION
             ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Tag of URL table';
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Tag of URL table';
 
 -- #################################
 -- ##            QR Code          ##
@@ -295,46 +295,70 @@ CREATE TABLE `j_url_tag`
 -- j_qr_codes table
 CREATE TABLE `j_qr_codes` (
     `id` VARCHAR(64) NOT NULL,
+    `title` VARCHAR(256) COMMENT 'title or header of target URL page',
     `user_id` VARCHAR(64) NOT NULL COMMENT 'User ID',
+    `width` INT DEFAULT 300 COMMENT 'width',
+    `height` INT DEFAULT 300 COMMENT 'height',
+    `margin` INT DEFAULT 0 COMMENT 'margin: 0 to 40',
+    `type` VARCHAR(10) DEFAULT 'svg' COMMENT 'type, default svg',
     `has_url` BOOLEAN DEFAULT 0 COMMENT '0: No Short URL, 1: Has Short URL',
-    `url_id` VARCHAR(64) COMMENT 'Short URL id',
-    `original_url` TEXT COMMENT 'Original URL',
-    `icon_path` VARCHAR(512) COMMENT 'Icon file path',
-    `error_correction_level` CHAR(1) DEFAULT 'Q' COMMENT 'ErrorCorrectionLevel: L, M, Q, H',
+    `url_id` VARCHAR(64) COMMENT 'Short URL id if has_url is 1',
+    `data` TEXT COMMENT 'Original URL or short URL if has_url is 1',
+    `foreground_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'foreground color including dotsOptions.color, cornersSquareOptions.color and cornersDotOptions.color',
+    `background_color` VARCHAR(7) DEFAULT '#FFFFFF' COMMENT 'backgroundOptions.color',
+    `use_border` BOOLEAN DEFAULT 0 COMMENT '0: borderless, 1: Has border',
+    `border_width` INT DEFAULT 0 COMMENT 'border width: 0 to 20',
+    `border_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'border color',
+    `border_radius` INT DEFAULT 0 COMMENT 'border radius: 0 to 40',
+    `use_logo` BOOLEAN DEFAULT 0 COMMENT '0: no logo, 1: use logo',
+    `logo_id` VARCHAR(64) COMMENT 'Logo file id',
     `image_options_hide_background_dots` BOOLEAN DEFAULT 1 COMMENT 'imageOptions.hideBackgroundDots: 0: false/Show background dots, 1: true/Hide background dots',
-    `image_options_size` DECIMAL(2, 1) DEFAULT 0.4 COMMENT 'imageOptions.imageSize: 0.5, 0.4, 0.3, 0.1',
-    `image_options_margin` INT DEFAULT 10 COMMENT 'imageOptions.margin: 10',
+    `image_options_size` DECIMAL(2 , 1 ) DEFAULT 0.4 COMMENT 'imageOptions.imageSize: 0.5, 0.4, 0.3, 0.1',
+    `image_options_margin` INT DEFAULT 10 COMMENT 'imageOptions.margin: 0 to 20',
     `image_options_cross_origin` VARCHAR(15) DEFAULT 'anonymous' COMMENT 'imageOptions.crossOrigin: anonymous, use-credentials',
+    `type_number` INT DEFAULT 0 COMMENT 'qrOptions.typeNumber: 0 to 40',
+    `mode` VARCHAR(12) DEFAULT 'Byte' COMMENT 'mode: Numeric, Alphanumeric, Byte, Kanji, default is Byte',
+    `error_correction_level` CHAR(1) DEFAULT 'H' COMMENT 'qrOptions.errorCorrectionLevel: L, M, Q, H',
     `dots_options_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'dotsOptions.color: #FFFFFF',
     `dots_options_type` VARCHAR(20) DEFAULT 'square' COMMENT 'dotsOptions.type: dot, square, extra-rounded, rounded, dots, classy, classy-rounded',
+    `dots_options_gradient_enabled` BOOLEAN DEFAULT 0 COMMENT '0: diabled, 1: enabled',
+    `dots_options_gradient_type` VARCHAR(6) COMMENT 'dotsOptions.gradient.type: linear, radial',
+    `dots_options_gradient_rotation` INT COMMENT 'dotsOptions.gradient.rotation: 0 to 360',
+    `dots_options_gradient_color_from` VARCHAR(7) COMMENT 'dotsOptions.gradient.colorFrom: #FFFFFF',
+    `dots_options_gradient_color_to` VARCHAR(7) COMMENT 'dotsOptions.gradient.colorTo: #FFFFFF',
     `corners_square_options_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'cornersSquareOptions.color: #FFFFFF',
     `corners_square_options_type` VARCHAR(20) DEFAULT 'square' COMMENT 'cornersSquareOptions.type: dot, square, extra-rounded, rounded, dots, classy, classy-rounded',
+    `corners_square_options_gradient_enabled` BOOLEAN DEFAULT 0 COMMENT '0: diabled, 1: enabled',
+    `corners_square_options_gradient_type` VARCHAR(6) COMMENT 'cornersSquareOptions.gradient.type: linear, radial',
+    `corners_square_options_gradient_rotation` INT COMMENT 'cornersSquareOptions.gradient.rotation: 0 to 360',
+    `corners_square_options_gradient_color_from` VARCHAR(7) COMMENT 'cornersSquareOptions.gradient.colorFrom: #FFFFFF',
+    `corners_square_options_gradient_color_to` VARCHAR(7) COMMENT 'cornersSquareOptions.gradient.colorTo: #FFFFFF',
     `corners_dot_options_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'cornersDotOptions.color: #FFFFFF',
     `corners_dot_options_type` VARCHAR(20) DEFAULT 'square' COMMENT 'cornersDotOptions.type: dot, square, extra-rounded, rounded, dots, classy, classy-rounded',
+    `corners_dot_options_gradient_enabled` BOOLEAN DEFAULT 0 COMMENT '0: diabled, 1: enabled',
+    `corners_dot_options_gradient_type` VARCHAR(6) COMMENT 'cornersDotOptions.gradient.type: linear, radial',
+    `corners_dot_options_gradient_rotation` INT COMMENT 'cornersDotOptions.gradient.rotation: 0 to 360',
+    `corners_dot_options_gradient_color_from` VARCHAR(7) COMMENT 'cornersDotOptions.gradient.colorFrom: #FFFFFF',
+    `corners_dot_options_gradient_color_to` VARCHAR(7) COMMENT 'cornersDotOptions.gradient.colorTo: #FFFFFF',
     `background_options_color` VARCHAR(7) DEFAULT '#FFFFFF' COMMENT 'backgroundOptions.color: #FFFFFF',
+    `background_options_gradient_enabled` BOOLEAN DEFAULT 0 COMMENT '0: diabled, 1: enabled',
     `background_options_gradient_type` VARCHAR(6) COMMENT 'backgroundOptions.gradient.type: linear, radial',
     `background_options_gradient_rotation` INT COMMENT 'backgroundOptions.gradient.rotation: 0 to 360',
     `background_options_gradient_color_from` VARCHAR(7) COMMENT 'backgroundOptions.gradient.colorFrom: #FFFFFF',
     `background_options_gradient_color_to` VARCHAR(7) COMMENT 'backgroundOptions.gradient.colorTo: #FFFFFF',
     `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-
     PRIMARY KEY (`id`),
-
-    INDEX `j_qr_codes_url_id_FK_idx` (`url_id` ASC) VISIBLE,
-
-    CONSTRAINT `j_qr_codes_url_id_FK`
-        FOREIGN KEY (`url_id`)
+    CONSTRAINT `j_qr_codes_url_id_FK` FOREIGN KEY (`url_id`)
         REFERENCES `j_urls` (`id`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION,
-
-    CONSTRAINT `j_qr_codes_users_id_FK`
-        FOREIGN KEY (`user_id`)
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `j_qr_codes_users_id_FK` FOREIGN KEY (`user_id`)
         REFERENCES `j_users` (`id`)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='QR Code table';
+        ON DELETE NO ACTION ON UPDATE NO ACTION,
+    CONSTRAINT `j_qr_codes_logo_id_FK` FOREIGN KEY (`logo_id`)
+        REFERENCES `j_logo` (`id`)
+        ON DELETE NO ACTION ON UPDATE NO ACTION
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='QR Code table';
 
 -- #################################
 -- ##             Logo            ##

@@ -2,6 +2,7 @@ package com.nonisystems.jit.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,6 +36,24 @@ public class QrCodeEntity implements Serializable {
     @JoinColumn(name = "user_id", updatable = false)
     private UserEntity user;
 
+    @NotNull
+    @Column(name = "width")
+    private Integer width;
+
+    @NotNull
+    @Column(name = "height")
+    private Integer height;
+
+    @NotNull
+    @Column(name = "margin")
+    private Integer margin;
+
+    @NotNull
+    @Size(max = 10)
+    @Column(name = "type")
+    private String type;
+
+    @NotNull
     @Column(name = "has_url")
     private Boolean hasUrl;
 
@@ -43,17 +62,40 @@ public class QrCodeEntity implements Serializable {
     @JoinColumn(name = "url_id", unique = true, nullable = true)
     private UrlEntity url;
 
+    @NotNull
     @Size(max = 4096)
-    @Column(name = "original_url")
-    private String originalUrl;
+    @Column(name = "data")
+    private String data;
 
-    @Size(max = 512)
-    @Column(name = "icon_path")
-    private String iconPath;
+    @Size(max = 7)
+    @Column(name = "foreground_color")
+    private String foregroundColor;
 
-    @Size(max = 1)
-    @Column(name = "error_correction_level")
-    private String errorCorrectionLevel;
+    @Size(max = 7)
+    @Column(name = "background_color")
+    private String backgroundColor;
+
+    @Column(name = "use_border")
+    private Boolean useBorder;
+
+    @Column(name = "border_width")
+    private Integer borderWidth;
+
+    @Size(max = 7)
+    @Column(name = "border_color")
+    private String borderColor;
+
+    @Column(name = "border_radius")
+    private Integer borderRadius;
+
+    @NotNull
+    @Column(name = "use_logo")
+    private Boolean useLogo;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "logo_id", updatable = false)
+    private LogoEntity logo;
 
     @Column(name = "image_options_hide_background_dots")
     private Boolean imageOptionsHideBackgroundDots;
@@ -68,6 +110,17 @@ public class QrCodeEntity implements Serializable {
     @Column(name = "image_options_cross_origin")
     private String imageOptionsCrossOrigin;
 
+    @Column(name = "type_number")
+    private Integer typeNumber;
+
+    @Size(max = 12)
+    @Column(name = "mode")
+    private String mode;
+
+    @Size(max = 1)
+    @Column(name = "error_correction_level")
+    private String errorCorrectionLevel;
+
     @Size(max = 7)
     @Column(name = "dots_options_color")
     private String dotsOptionsColor;
@@ -75,6 +128,25 @@ public class QrCodeEntity implements Serializable {
     @Size(max = 20)
     @Column(name = "dots_options_type")
     private String dotsOptionsType;
+
+    @NotNull
+    @Column(name = "dots_options_gradient_enabled")
+    private Boolean dotsOptionsGradientEnabled;
+
+    @Size(max = 6)
+    @Column(name = "dots_options_gradient_type")
+    private String dotsOptionsGradientType;
+
+    @Column(name = "dots_options_gradient_rotation")
+    private Integer dotsOptionsGradientRotation;
+
+    @Size(max = 7)
+    @Column(name = "dots_options_gradient_color_from")
+    private String dotsOptionsGradientColorFrom;
+
+    @Size(max = 7)
+    @Column(name = "dots_options_gradient_color_to")
+    private String dotsOptionsGradientColorTo;
 
     @Size(max = 7)
     @Column(name = "corners_square_options_color")
@@ -84,6 +156,25 @@ public class QrCodeEntity implements Serializable {
     @Column(name = "corners_square_options_type")
     private String cornersSquareOptionsType;
 
+    @NotNull
+    @Column(name = "corners_square_options_gradient_enabled")
+    private Boolean cornersSquareOptionsGradientEnabled;
+
+    @Size(max = 6)
+    @Column(name = "corners_square_options_gradient_type")
+    private String cornersSquareOptionsGradientType;
+
+    @Column(name = "corners_square_options_gradient_rotation")
+    private Integer cornersSquareOptionsGradientRotation;
+
+    @Size(max = 7)
+    @Column(name = "corners_square_options_gradient_color_from")
+    private String cornersSquareOptionsGradientColorFrom;
+
+    @Size(max = 7)
+    @Column(name = "corners_square_options_gradient_color_to")
+    private String cornersSquareOptionsGradientColorTo;
+
     @Size(max = 7)
     @Column(name = "corners_dot_options_color")
     private String cornersDotOptionsColor;
@@ -92,9 +183,32 @@ public class QrCodeEntity implements Serializable {
     @Column(name = "corners_dot_options_type")
     private String cornersDotOptionsType;
 
+    @NotNull
+    @Column(name = "corners_dot_options_gradient_enabled")
+    private Boolean cornersDotOptionsGradientEnabled;
+
+    @Size(max = 6)
+    @Column(name = "corners_dot_options_gradient_type")
+    private String cornersDotOptionsGradientType;
+
+    @Column(name = "corners_dot_options_gradient_rotation")
+    private Integer cornersDotOptionsGradientRotation;
+
+    @Size(max = 7)
+    @Column(name = "corners_dot_options_gradient_color_from")
+    private String cornersDotOptionsGradientColorFrom;
+
+    @Size(max = 7)
+    @Column(name = "corners_dot_options_gradient_color_to")
+    private String cornersDotOptionsGradientColorTo;
+
     @Size(max = 7)
     @Column(name = "background_options_color")
     private String backgroundOptionsColor;
+
+    @NotNull
+    @Column(name = "background_options_gradient_enabled")
+    private Boolean backgroundOptionsGradientEnabled;
 
     @Size(max = 6)
     @Column(name = "background_options_gradient_type")
