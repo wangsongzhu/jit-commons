@@ -1,6 +1,7 @@
 package com.nonisystems.jit.common.converter;
 
 import com.nonisystems.jit.common.dto.QrCode;
+import com.nonisystems.jit.domain.entity.LogoEntity;
 import com.nonisystems.jit.domain.entity.QrCodeEntity;
 import com.nonisystems.jit.domain.entity.UrlEntity;
 import com.nonisystems.jit.domain.entity.UserEntity;
@@ -26,6 +27,11 @@ public class QrCodeEntityConverter {
         UrlEntity urlEntity = qrCodeEntity.getUrl();
         if (urlEntity != null) {
             qrCode.setUrlId(urlEntity.getId());
+        }
+
+        LogoEntity logoEntity = qrCodeEntity.getLogo();
+        if (logoEntity != null) {
+            qrCode.setLogoId(logoEntity.getId());
         }
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
