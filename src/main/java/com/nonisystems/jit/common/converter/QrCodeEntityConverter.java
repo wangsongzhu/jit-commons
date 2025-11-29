@@ -27,6 +27,7 @@ public class QrCodeEntityConverter {
         UrlEntity urlEntity = qrCodeEntity.getUrl();
         if (urlEntity != null) {
             qrCode.setUrlId(urlEntity.getId());
+            qrCode.setFullShortUrl(urlEntity.getFullShortUrl());
         }
 
         LogoEntity logoEntity = qrCodeEntity.getLogo();
