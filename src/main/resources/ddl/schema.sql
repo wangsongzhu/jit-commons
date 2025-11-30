@@ -44,8 +44,8 @@ CREATE TABLE `j_user_roles` (
   `user_id` VARCHAR(64) NOT NULL COMMENT 'User ID',
   `role_id` BIGINT NOT NULL COMMENT 'Role ID',
   PRIMARY KEY (`user_id`,`role_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `j_users` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE
+  FOREIGN KEY (`user_id`) REFERENCES `j_users` (`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='User role mapping';
 
 -- Permissions master
@@ -61,8 +61,8 @@ CREATE TABLE `j_role_permissions` (
   `role_id` BIGINT NOT NULL COMMENT 'Role ID',
   `permission_id` BIGINT NOT NULL COMMENT 'Permission ID',
   PRIMARY KEY (`role_id`,`permission_id`),
-  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE,
-  FOREIGN KEY (`permission_id`) REFERENCES `j_permissions` (`id`) ON DELETE CASCADE
+  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE SET NULL,
+  FOREIGN KEY (`permission_id`) REFERENCES `j_permissions` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Role permissions mapping';
 
 -- Master data
@@ -167,7 +167,7 @@ INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
 
 -- j_domains table
 CREATE TABLE `j_domains` (
-    `id`         BIGINT NOT NULL AUTO_INCREMENT,
+    `id`         VARCHAR(64) NOT NULL,
     `user_id`    VARCHAR(64) COMMENT 'User ID',
     `domain_url` VARCHAR(128) NOT NULL COMMENT 'Domain URL',
     `is_active`  BOOLEAN DEFAULT 0 COMMENT '0: inactive, 1: active',
@@ -178,13 +178,15 @@ CREATE TABLE `j_domains` (
     CONSTRAINT `j_domains_users_id_FK`
         FOREIGN KEY (`user_id`)
             REFERENCES `j_users` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI AUTO_INCREMENT = 201010101 COMMENT='Short URL Domains';
+            ON DELETE SET NULL
+            ON UPDATE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='Short URL Domains';
 
 -- Master data
 INSERT INTO `j_domains` (`id`, `domain_url`, `is_active`) VALUES
-(1, 'http://jit.io', 1);
+('0', 'http://jit.io', 1),
+('a', 'http://jit.ll', 1),
+('b', 'http://jit.cc', 0);
 
 -- #################################
 -- ##              URL            ##
@@ -194,10 +196,10 @@ INSERT INTO `j_domains` (`id`, `domain_url`, `is_active`) VALUES
 CREATE TABLE `j_urls`
 (
     `id`                    VARCHAR(64) NOT NULL,
-    `user_id`               VARCHAR(64) NOT NULL COMMENT 'User ID',
+    `user_id`               VARCHAR(64) COMMENT 'User ID',
     `title`                 VARCHAR(256) COMMENT 'title or header of target URL page',
     `original_url`          TEXT        NOT NULL COMMENT 'Original URL',
-    `domain_url_id`         BIGINT NOT NULL COMMENT 'Domain URL ID',
+    `domain_url_id`         VARCHAR(64) COMMENT 'Domain URL ID',
     `short_url`             VARCHAR(10) NOT NULL COMMENT 'Short part of short URL',
     `full_short_url`        VARCHAR(138) NOT NULL COMMENT 'Full short URL',
     `expiration_date`       DATETIME  NOT NULL DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
@@ -217,20 +219,21 @@ CREATE TABLE `j_urls`
     CONSTRAINT `j_urls_users_id_FK`
         FOREIGN KEY (`user_id`)
             REFERENCES `j_users` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
+            ON DELETE SET NULL
+            ON UPDATE CASCADE,
     CONSTRAINT `j_urls_domain_url_id_FK`
         FOREIGN KEY (`domain_url_id`)
             REFERENCES `j_domains` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
+            ON DELETE SET NULL
+            ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='URL table';
+
 
 -- j_click_records table
 CREATE TABLE `j_click_records`
 (
-    `id`                     BIGINT      NOT NULL AUTO_INCREMENT,
-    `url_id`                 VARCHAR(64) NOT NULL,
+    `id`                     BIGINT NOT NULL AUTO_INCREMENT,
+    `url_id`                 VARCHAR(64),
     `click_time`             TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `ip`                     VARCHAR(45) NULL,
     `browser`                VARCHAR(256) NULL,
@@ -247,9 +250,9 @@ CREATE TABLE `j_click_records`
     CONSTRAINT `j_click_records_urls_id_FK`
         FOREIGN KEY (`url_id`)
             REFERENCES `j_urls` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='URL Clicked history table';
+            ON DELETE SET NULL
+            ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI AUTO_INCREMENT = 1852600000000 COMMENT='URL Clicked history table';
 
 -- #################################
 -- ##              Tag            ##
@@ -258,35 +261,56 @@ CREATE TABLE `j_click_records`
 -- j_tag table
 CREATE TABLE `j_tag`
 (
-    `id`      BIGINT       NOT NULL AUTO_INCREMENT,
+    `id`      VARCHAR(64) NOT NULL,
     `name`    VARCHAR(256) NOT NULL COMMENT 'Tag name',
-    `user_id` VARCHAR(64)  NOT NULL COMMENT 'User ID',
+    `user_id` VARCHAR(64) COMMENT 'User ID',
     PRIMARY KEY (`id`),
-    CONSTRAINT `j_tag_user_id_FK`
-        FOREIGN KEY (`user_id`)
-            REFERENCES `j_users` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI AUTO_INCREMENT = 502030301 COMMENT='Tag of user table';
+    CONSTRAINT `j_tag_user_id_FK` FOREIGN KEY (`user_id`)
+        REFERENCES `j_users` (`id`)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='Tag of user table';
 
 -- j_url_tag table
 CREATE TABLE `j_url_tag`
 (
-    `id`     BIGINT      NOT NULL AUTO_INCREMENT,
-    `url_id` VARCHAR(64) NOT NULL,
-    `tag_id` BIGINT      NOT NULL,
+    `id`     VARCHAR(64) NOT NULL,
+    `url_id` VARCHAR(64),
+    `tag_id` VARCHAR(64),
     PRIMARY KEY (`id`),
     CONSTRAINT `j_url_tag_url_id_FK`
         FOREIGN KEY (`url_id`)
             REFERENCES `j_urls` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION,
+            ON DELETE SET NULL
+            ON UPDATE CASCADE,
     CONSTRAINT `j_url_tag_tag_id_FK`
         FOREIGN KEY (`tag_id`)
             REFERENCES `j_tag` (`id`)
-            ON DELETE NO ACTION
-            ON UPDATE NO ACTION
+            ON DELETE SET NULL
+            ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Tag of URL table';
+
+-- #################################
+-- ##             Logo            ##
+-- #################################
+
+-- j_logo table
+CREATE TABLE `j_logo` (
+    `id` VARCHAR(64) NOT NULL,
+    `user_id` VARCHAR(64) COMMENT 'User ID',
+    `logo_option` TINYINT NOT NULL DEFAULT 0 COMMENT '0: URL, 1: File Upload',
+    `name` VARCHAR(256) NOT NULL COMMENT 'Name of logo',
+    `url` TEXT COMMENT 'Logo URL for URL option, or file name for File Upload option',
+    `file_name` VARCHAR(256) COMMENT 'Logo file name',
+    `file_key` VARCHAR(64) COMMENT 'Logo file key',
+    `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
+    `modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `j_logo_users_id_FK` FOREIGN KEY (`user_id`)
+        REFERENCES `j_users` (`id`)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='Logo table';
 
 -- #################################
 -- ##            QR Code          ##
@@ -296,7 +320,7 @@ CREATE TABLE `j_url_tag`
 CREATE TABLE `j_qr_codes` (
     `id` VARCHAR(64) NOT NULL,
     `name` VARCHAR(64) NOT NULL COMMENT 'QR Code name',
-    `user_id` VARCHAR(64) NOT NULL COMMENT 'User ID',
+    `user_id` VARCHAR(64) COMMENT 'User ID',
     `width` INT DEFAULT 300 COMMENT 'width',
     `height` INT DEFAULT 300 COMMENT 'height',
     `margin` INT DEFAULT 0 COMMENT 'margin: 0 to 40',
@@ -351,32 +375,14 @@ CREATE TABLE `j_qr_codes` (
     PRIMARY KEY (`id`),
     CONSTRAINT `j_qr_codes_url_id_FK` FOREIGN KEY (`url_id`)
         REFERENCES `j_urls` (`id`)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
     CONSTRAINT `j_qr_codes_users_id_FK` FOREIGN KEY (`user_id`)
         REFERENCES `j_users` (`id`)
-        ON DELETE NO ACTION ON UPDATE NO ACTION,
+        ON DELETE SET NULL
+        ON UPDATE CASCADE,
     CONSTRAINT `j_qr_codes_logo_id_FK` FOREIGN KEY (`logo_id`)
         REFERENCES `j_logo` (`id`)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 )  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='QR Code table';
-
--- #################################
--- ##             Logo            ##
--- #################################
-
--- j_logo table
-CREATE TABLE `j_logo` (
-    `id` VARCHAR(64) NOT NULL,
-    `user_id` VARCHAR(64) NOT NULL COMMENT 'User ID',
-    `logo_option` TINYINT NOT NULL DEFAULT 0 COMMENT '0: URL, 1: File Upload',
-    `name` VARCHAR(256) NOT NULL COMMENT 'Name of logo',
-    `url` TEXT COMMENT 'Logo URL for URL option, or file name for File Upload option',
-    `file_name` VARCHAR(256) COMMENT 'Logo file name',
-    `file_key` VARCHAR(64) COMMENT 'Logo file key',
-    `created` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
-    `modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `j_logo_users_id_FK` FOREIGN KEY (`user_id`)
-        REFERENCES `j_users` (`id`)
-        ON DELETE NO ACTION ON UPDATE NO ACTION
-)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='Logo table';

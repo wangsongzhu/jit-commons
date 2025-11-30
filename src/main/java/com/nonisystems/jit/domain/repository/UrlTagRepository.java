@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-public interface UrlTagRepository extends JpaRepository<UrlTagEntity, Long> {
+public interface UrlTagRepository extends JpaRepository<UrlTagEntity, String> {
 
     @Modifying
     @Transactional
@@ -19,5 +19,5 @@ public interface UrlTagRepository extends JpaRepository<UrlTagEntity, Long> {
 
     Optional<List<UrlTagEntity>> findAllByUrlId(String urlId);
 
-    Optional<List<UrlTagEntity>> findAllByTagId(Long tagId);
+    Optional<List<UrlTagEntity>> findAllByTagId(String tagId);
 }

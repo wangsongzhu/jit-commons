@@ -13,6 +13,6 @@ import java.io.Serializable;
 @ToString
 public class Tag implements Serializable {
 
-    private Long id;
+    private String id;
     private String name;
 }

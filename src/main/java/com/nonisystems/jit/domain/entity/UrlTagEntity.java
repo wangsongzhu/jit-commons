@@ -2,6 +2,7 @@ package com.nonisystems.jit.domain.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,9 +22,9 @@ import java.util.Objects;
 public class UrlTagEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Size(max = 64)
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     /**
      * (FK) URL information

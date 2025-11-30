@@ -9,19 +9,19 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 import java.util.Optional;
 
-public interface TagRepository extends JpaRepository<TagEntity, Long> {
+public interface TagRepository extends JpaRepository<TagEntity, String> {
 
     Optional<TagEntity> getTagEntityByUser(UserEntity user);
 
     Optional<TagEntity> getTagEntityByUserAndName(UserEntity user, @NotNull @Size(max = 256) String name);
 
-    Optional<TagEntity> getTagEntityById(Long id);
+    Optional<TagEntity> getTagEntityById(String id);
 
     Optional<List<TagEntity>> findAllByUserIdOrderByName(String userId);
 
     boolean existsByNameAndUser(String name, UserEntity user);
 
-    void deleteById(Long id);
+    void deleteById(String id);
 
     void deleteByUserId(String userId);
 }
