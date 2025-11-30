@@ -20,7 +20,7 @@ public class Url implements Serializable {
     private String title;
     private String originalUrl;
     private String originalDomain;
-    private Long domainUrlId;
+    private String domainUrlId;
     private String domainUrl;
     private String shortUrl;
     private String fullShortUrl;

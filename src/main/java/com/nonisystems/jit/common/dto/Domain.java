@@ -13,7 +13,7 @@ import java.io.Serializable;
 @ToString
 public class Domain implements Serializable {
 
-    private Long id;
+    private String id;
     private String domainUrl;
     private boolean isActive;
 }

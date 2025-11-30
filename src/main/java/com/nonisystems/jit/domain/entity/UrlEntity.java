@@ -41,7 +41,7 @@ public class UrlEntity implements Serializable {
 
     @NotNull
     @Column(name = "domain_url_id")
-    private Long domainUrlId;
+    private String domainUrlId;
 
     @NotNull
     @Size(max = 10)

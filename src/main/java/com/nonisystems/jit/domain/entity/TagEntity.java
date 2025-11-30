@@ -25,9 +25,9 @@ import java.util.Set;
 public class TagEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Size(max = 64)
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @NotNull
     @Size(max = 256)

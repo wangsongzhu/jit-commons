@@ -26,9 +26,9 @@ import java.util.Objects;
 public class DomainEntity implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Size(max = 64)
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @JsonIgnore
     @JoinColumn(name = "user_id", updatable = false)

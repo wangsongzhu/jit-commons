@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface DomainRepository extends JpaRepository<DomainEntity, Long> {
+public interface DomainRepository extends JpaRepository<DomainEntity, String> {
 
-    @Query("SELECT d FROM DomainEntity d WHERE d.userId = :userId OR d.id = 1 ORDER BY d.isActive DESC, d.id DESC")
+    @Query("SELECT d FROM DomainEntity d WHERE d.userId = :userId OR d.id = '0' ORDER BY d.isActive DESC, d.id DESC")
     Optional<List<DomainEntity>> findByUserIdWithDefault(@Param("userId") String userId);
 
     Optional<List<DomainEntity>> findByUserId(String userId);
