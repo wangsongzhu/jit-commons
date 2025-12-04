@@ -7,6 +7,8 @@ import lombok.ToString;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -80,4 +82,6 @@ public class QrCode implements Serializable {
 
     private String created;
     private String modified;
+
+    private List<Tag> tags = new ArrayList<>();
 }
