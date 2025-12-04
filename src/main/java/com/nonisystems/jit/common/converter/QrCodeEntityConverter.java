@@ -1,15 +1,16 @@
 package com.nonisystems.jit.common.converter;
 
 import com.nonisystems.jit.common.dto.QrCode;
-import com.nonisystems.jit.domain.entity.LogoEntity;
-import com.nonisystems.jit.domain.entity.QrCodeEntity;
-import com.nonisystems.jit.domain.entity.UrlEntity;
-import com.nonisystems.jit.domain.entity.UserEntity;
+import com.nonisystems.jit.common.dto.Tag;
+import com.nonisystems.jit.domain.entity.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -44,6 +45,23 @@ public class QrCodeEntityConverter {
             qrCode.setModified(qrCodeEntity.getModified().toLocalDateTime().format(formatter));
             log.debug("modified: {}", qrCode.getModified());
         }
+
+        List<Tag> tags = new ArrayList<>();
+        log.debug("before getting qrCodeTagEntities size");
+        if (qrCodeEntity.getQrCodeTags() != null && !qrCodeEntity.getQrCodeTags().isEmpty()) {
+            Set<QrCodeTagEntity> qrCodeTagEntities = qrCodeEntity.getQrCodeTags();
+            log.debug("qrCodeTagEntities size: {}", qrCodeTagEntities.size());
+            for (QrCodeTagEntity qrCodeTagEntity : qrCodeTagEntities) {
+                log.debug("qrCodeTagEntity id: {}", qrCodeTagEntity.getId());
+                TagEntity tagEntity = qrCodeTagEntity.getTag();
+                log.debug("tagEntity id: {}", tagEntity.getId());
+                Tag tag = new Tag();
+                tag.setId(tagEntity.getId());
+                tag.setName(tagEntity.getName());
+                tags.add(tag);
+            }
+        }
+        qrCode.setTags(tags);
 
         return qrCode;
     }

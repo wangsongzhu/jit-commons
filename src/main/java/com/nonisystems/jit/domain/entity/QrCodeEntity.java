@@ -11,12 +11,13 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.boot.context.properties.bind.DefaultValue;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -235,6 +236,12 @@ public class QrCodeEntity implements Serializable {
     @UpdateTimestamp
     @Column(name = "modified")
     private Timestamp modified;
+
+    /**
+     * QRCode Tags information
+     */
+    @OneToMany(mappedBy = "qrCode", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<QrCodeTagEntity> qrCodeTags = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

@@ -290,6 +290,25 @@ CREATE TABLE `j_url_tag`
             ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Tag of URL table';
 
+-- j_qr_code_tag table
+CREATE TABLE `j_qr_code_tag`
+(
+    `id`         VARCHAR(64) NOT NULL,
+    `qr_code_id` VARCHAR(64),
+    `tag_id`     VARCHAR(64),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `j_qr_code_tag_qr_code_id_FK`
+        FOREIGN KEY (`qr_code_id`)
+            REFERENCES `j_qr_codes` (`id`)
+            ON DELETE SET NULL
+            ON UPDATE CASCADE,
+    CONSTRAINT `j_qr_code_tag_tag_id_FK`
+        FOREIGN KEY (`tag_id`)
+            REFERENCES `j_tag` (`id`)
+            ON DELETE SET NULL
+            ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Tag of QRCode table';
+
 -- #################################
 -- ##             Logo            ##
 -- #################################
