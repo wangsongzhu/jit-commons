@@ -2,6 +2,7 @@ package com.nonisystems.jit.service;
 
 import com.nonisystems.jit.common.config.util.UUIDGenerator;
 import com.nonisystems.jit.common.converter.UserEntityConverter;
+import com.nonisystems.jit.common.dto.JwtUserDetails;
 import com.nonisystems.jit.common.dto.Tag;
 import com.nonisystems.jit.common.dto.User;
 import com.nonisystems.jit.common.exception.GeneralException;
@@ -13,6 +14,8 @@ import com.nonisystems.jit.domain.repository.TagRepository;
 import com.nonisystems.jit.domain.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +45,63 @@ public class UserServiceImpl implements UserService {
         this.uuidGenerator = uuidGenerator;
         this.passwordEncoder = passwordEncoder;
         this.userEntityConverter = userEntityConverter;
+    }
+
+    /**
+     * Get current login user id
+     *
+     * @return user id
+     */
+    @Override
+    public String getLoggedInUserId() {
+        String userId = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
+            if (userDetails != null) {
+                userId = userDetails.getUserId();
+            }
+        }
+        if (StringUtils.isBlank(userId)) {
+            throw new GeneralException(400, "validation.access.not_logged_in");
+        }
+        return userId;
+    }
+
+    /**
+     * Check if current user logged in
+     *
+     * @return true if logged in otherwise false
+     */
+    @Override
+    public boolean checkIfCurrentUserLoggedIn() {
+        String userId = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            JwtUserDetails userDetails = (JwtUserDetails) authentication.getPrincipal();
+            if (userDetails != null) {
+                userId = userDetails.getUserId();
+            }
+        }
+        if (StringUtils.isBlank(userId)) {
+            throw new GeneralException(400, "validation.access.not_logged_in");
+        }
+        return true;
+    }
+
+    /**
+     * Check if current user an administrator
+     *
+     * @return true if administrator otherwise false
+     */
+    @Override
+    public boolean isCurrentUserAdmin() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getAuthorities() != null) {
+            return authentication.getAuthorities().stream()
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().contains("ADMIN"));
+        }
+        return false;
     }
 
     /**

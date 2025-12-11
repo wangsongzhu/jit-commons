@@ -8,9 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -42,12 +45,27 @@ public class TagEntity implements Serializable {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private UserEntity user;
 
+    @CreationTimestamp
+    @Column(name = "created")
+    private Timestamp created;
+
+    @UpdateTimestamp
+    @Column(name = "modified")
+    private Timestamp modified;
+
     /**
      * URL Tags information
      */
     @JsonIgnore
     @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Set<UrlTagEntity> tagUrls = new HashSet<>();
+    private Set<UrlTagEntity> urlTags = new HashSet<>();
+
+    /**
+     * QRCode Tags information
+     */
+    @JsonIgnore
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<QrCodeTagEntity> qrCodeTags = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

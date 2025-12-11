@@ -12,13 +12,22 @@ import java.util.Optional;
 public interface QrCodeRepository extends JpaRepository<QrCodeEntity, String>, JpaSpecificationExecutor<QrCodeEntity> {
 
     /**
+     * Find QR Code by id and user id
+     *
+     * @param id     url id
+     * @param userId user id
+     * @return Optional<QrCodeEntity>
+     */
+    Optional<QrCodeEntity> findByIdAndUser_Id(String id, String userId);
+
+    /**
      * Find QR Code by userId (for pagination)
      *
      * @param userId   userId
      * @param pageable pageable
      * @return Page<QrCodeEntity>
      */
-    Page<QrCodeEntity> findAllByUserId(String userId, Pageable pageable);
+    Page<QrCodeEntity> findAllByUser_Id(String userId, Pageable pageable);
 
     /**
      * Find QR Codes by User ID (for deleting)
@@ -26,27 +35,29 @@ public interface QrCodeRepository extends JpaRepository<QrCodeEntity, String>, J
      * @param userId User ID
      * @return List<QrCodeEntity>
      */
-    List<QrCodeEntity> findAllByUserId(String userId);
+    List<QrCodeEntity> findAllByUser_Id(String userId);
 
     /**
      * Find QR Code by Url ID
      *
      * @param urlId Url ID
+     * @param userId User ID
      * @return Optional<QrCodeEntity>
      */
-    Optional<QrCodeEntity> findByUrlId(String urlId);
+    Optional<QrCodeEntity> findByUrl_IdAndUser_Id(String urlId, String userId);
 
     /**
      * Delete QR Codes by User ID
      *
      * @param userId User ID
      */
-    void deleteAllByUserId(String userId);
+    void deleteAllByUser_Id(String userId);
 
     /**
      * Delete QR Code by Url ID
      *
      * @param urlId Url ID
+     * @param userId User ID
      */
-    void deleteByUrlId(String urlId);
+    void deleteByUrl_IdAndUser_Id(String urlId, String userId);
 }
