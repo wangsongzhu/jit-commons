@@ -33,7 +33,7 @@ CREATE TABLE `j_users`
 
 -- roles master
 CREATE TABLE `j_roles` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `id` BIGINT NOT NULL,
   `name` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Role name',
   `description` VARCHAR(255) DEFAULT NULL COMMENT 'Role description',
   PRIMARY KEY (`id`)
@@ -44,13 +44,13 @@ CREATE TABLE `j_user_roles` (
   `user_id` VARCHAR(64) NOT NULL COMMENT 'User ID',
   `role_id` BIGINT NOT NULL COMMENT 'Role ID',
   PRIMARY KEY (`user_id`,`role_id`),
-  FOREIGN KEY (`user_id`) REFERENCES `j_users` (`id`) ON DELETE SET NULL,
-  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE SET NULL
+  FOREIGN KEY (`user_id`) REFERENCES `j_users` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='User role mapping';
 
 -- Permissions master
 CREATE TABLE `j_permissions` (
-  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `id` BIGINT NOT NULL,
   `name` VARCHAR(50) NOT NULL UNIQUE COMMENT 'Permission name',
   `description` VARCHAR(255) DEFAULT NULL COMMENT 'Permission description',
   PRIMARY KEY (`id`)
@@ -61,38 +61,39 @@ CREATE TABLE `j_role_permissions` (
   `role_id` BIGINT NOT NULL COMMENT 'Role ID',
   `permission_id` BIGINT NOT NULL COMMENT 'Permission ID',
   PRIMARY KEY (`role_id`,`permission_id`),
-  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE SET NULL,
-  FOREIGN KEY (`permission_id`) REFERENCES `j_permissions` (`id`) ON DELETE SET NULL
+  FOREIGN KEY (`role_id`) REFERENCES `j_roles` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`permission_id`) REFERENCES `j_permissions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Role permissions mapping';
 
 -- Master data
-INSERT INTO `j_roles` (`name`, `description`) VALUES
-('ROLE_FREE', 'Free'),
-('ROLE_STANDARD', 'Standard'),
-('ROLE_PREMIER', 'Premier'),
-('ROLE_PLATINUM', 'Platinum');
+INSERT INTO `j_roles` (`id`, `name`, `description`) VALUES
+(10, 'ROLE_FREE', 'Free'),
+(20, 'ROLE_STANDARD', 'Standard'),
+(30, 'ROLE_PREMIER', 'Premier'),
+(40, 'ROLE_PLATINUM', 'Platinum'),
+(999, 'ROLE_ORG_ADMIN', 'Super Administrator');
 
-INSERT INTO `j_permissions` (`name`, `description`) VALUES
-('P010', 'QR Codes, attibute: number/month'),
-('P020', 'Links, attibute: number/month'),
-('P030', 'Custom landing pages, attibute: number'),
-('P040', 'Limited clicks, attibute: number/month'),
-('P050', 'Limited QR Code scans, attibute: number/month'),
-('P060', 'QR Code customizations'),
-('P070', 'Advanced QR Code customizations'),
-('P080', 'Days of click data, attibute: number'),
-('P090', 'Days of scan data, attibute: number'),
-('P100', 'UTM Builder'),
-('P110', 'Link redirects'),
-('P120', 'QR Code redirects'),
-('P130', 'Complimentary custom domain'),
-('P140', 'Branded links'),
-('P150', 'Bulk link creation'),
-('P160', 'Bulk QR Code creation'),
-('P170', 'Custom campaign-level tracking'),
-('P180', 'City-level scan data'),
-('P190', 'Device type click scan data'),
-('P200', 'Mobile deep linking');
+INSERT INTO `j_permissions` (`id`, `name`, `description`) VALUES
+(10, 'P010', 'QR Codes, attibute: number/month'),
+(20, 'P020', 'Links, attibute: number/month'),
+(30, 'P030', 'Custom landing pages, attibute: number'),
+(40, 'P040', 'Limited clicks, attibute: number/month'),
+(50, 'P050', 'Limited QR Code scans, attibute: number/month'),
+(60, 'P060', 'QR Code customizations'),
+(70, 'P070', 'Advanced QR Code customizations'),
+(80, 'P080', 'Days of click data, attibute: number'),
+(90, 'P090', 'Days of scan data, attibute: number'),
+(100, 'P100', 'UTM Builder'),
+(110, 'P110', 'Link redirects'),
+(120, 'P120', 'QR Code redirects'),
+(130, 'P130', 'Complimentary custom domain'),
+(140, 'P140', 'Branded links'),
+(150, 'P150', 'Bulk link creation'),
+(160, 'P160', 'Bulk QR Code creation'),
+(170, 'P170', 'Custom campaign-level tracking'),
+(180, 'P180', 'City-level scan data'),
+(190, 'P190', 'Device type click scan data'),
+(200, 'P200', 'Mobile deep linking');
 
 -- ROLE_FREE Role permissions mapping
 INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
@@ -160,6 +161,28 @@ INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
 ((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P190')),
 ((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
 
+-- ROLE_ORG_ADMIN Role permissions mapping
+INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P160')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P170')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P180')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P190')),
+((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
 
 -- #################################
 -- ##      Short URL Domains      ##
@@ -264,6 +287,8 @@ CREATE TABLE `j_tag`
     `id`      VARCHAR(64) NOT NULL,
     `name`    VARCHAR(256) NOT NULL COMMENT 'Tag name',
     `user_id` VARCHAR(64) COMMENT 'User ID',
+    `created`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
+    `modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT `j_tag_user_id_FK` FOREIGN KEY (`user_id`)
         REFERENCES `j_users` (`id`)
@@ -277,6 +302,8 @@ CREATE TABLE `j_url_tag`
     `id`     VARCHAR(64) NOT NULL,
     `url_id` VARCHAR(64),
     `tag_id` VARCHAR(64),
+    `created`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
+    `modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT `j_url_tag_url_id_FK`
         FOREIGN KEY (`url_id`)
@@ -393,6 +420,8 @@ CREATE TABLE `j_qr_code_tag`
     `id`         VARCHAR(64) NOT NULL,
     `qr_code_id` VARCHAR(64),
     `tag_id`     VARCHAR(64),
+    `created`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
+    `modified` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
     CONSTRAINT `j_qr_code_tag_qr_code_id_FK`
         FOREIGN KEY (`qr_code_id`)

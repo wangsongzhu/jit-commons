@@ -7,9 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Data
@@ -41,6 +44,14 @@ public class QrCodeTagEntity implements Serializable {
     @JsonIgnore
     @JoinColumn(name = "tag_id", nullable = false, updatable = false)
     private TagEntity tag;
+
+    @CreationTimestamp
+    @Column(name = "created")
+    private Timestamp created;
+
+    @UpdateTimestamp
+    @Column(name = "modified")
+    private Timestamp modified;
 
     @Override
     public boolean equals(Object o) {

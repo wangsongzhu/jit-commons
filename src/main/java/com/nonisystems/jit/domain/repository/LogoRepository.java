@@ -13,13 +13,22 @@ import java.util.Optional;
 public interface LogoRepository extends JpaRepository<LogoEntity, String>, JpaSpecificationExecutor<LogoEntity> {
 
     /**
+     * Find logo by id and user id
+     *
+     * @param id     logo id
+     * @param userId user id
+     * @return Optional<LogoEntity>
+     */
+    Optional<LogoEntity> findByIdAndUser_Id(String id, String userId);
+
+    /**
      * Find logos by userId (for pagination)
      *
      * @param userId   userId
      * @param pageable pageable
      * @return Page<LogoEntity>
      */
-    Page<LogoEntity> findAllByUserId(String userId, Pageable pageable);
+    Page<LogoEntity> findAllByUser_Id(String userId, Pageable pageable);
 
     /**
      * Find logos by User ID (for sorting)
@@ -28,15 +37,15 @@ public interface LogoRepository extends JpaRepository<LogoEntity, String>, JpaSp
      * @param sort   Sort
      * @return List<LogoEntity>
      */
-    List<LogoEntity> findAllByUserId(String userId, Sort sort);
+    List<LogoEntity> findAllByUser_Id(String userId, Sort sort);
 
     /**
-     * Find logos by User ID (for deleting)
+     * Find logos by User ID
      *
      * @param userId User ID
      * @return List<LogoEntity>
      */
-    List<LogoEntity> findAllByUserId(String userId);
+    List<LogoEntity> findAllByUser_Id(String userId);
 
     /**
      * Find logo by User ID and URL
@@ -45,12 +54,21 @@ public interface LogoRepository extends JpaRepository<LogoEntity, String>, JpaSp
      * @param url    url
      * @return Optional<LogoEntity>
      */
-    Optional<LogoEntity> findByUserIdAndUrl(String userId, String url);
+    Optional<LogoEntity> findByUser_IdAndUrl(String userId, String url);
 
     /**
      * Delete logos by User ID
      *
      * @param userId User ID
      */
-    void deleteAllByUserId(String userId);
+    void deleteAllByUser_Id(String userId);
+
+    /**
+     * Check if logo exists by User ID and URL
+     *
+     * @param userId User ID
+     * @param url    url
+     * @return true if exists, false otherwise
+     */
+    boolean existsByUser_IdAndUrl(String userId, String url);
 }
