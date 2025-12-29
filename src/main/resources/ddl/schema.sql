@@ -17,15 +17,25 @@ use jit;
 -- j_users table
 CREATE TABLE `j_users`
 (
-    `id`                VARCHAR(64)  NOT NULL COMMENT 'User UUID',
-    `email`             VARCHAR(254) NOT NULL COMMENT 'User email',
-    `password_hash`     VARCHAR(256) NOT NULL COMMENT 'Password encrypted',
-    `signup_date`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date and time signed up',
-    `verified`          TINYINT NOT NULL DEFAULT 0 COMMENT '0: Email not verified, 1: Email verified',
-    `last_login`        TIMESTAMP COMMENT 'Date and time of last login',
+    `id` VARCHAR(64)  NOT NULL COMMENT 'User UUID',
+    `sub` VARCHAR(64)  NOT NULL COMMENT 'Logto Sub',
+    `email` VARCHAR(254) NOT NULL COMMENT 'User email',
     PRIMARY KEY (`id`),
+    UNIQUE INDEX `sub_UNIQUE` (`sub` ASC) VISIBLE,
     UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Users';
+
+-- CREATE TABLE `j_users`
+-- (
+--    `id`                VARCHAR(64)  NOT NULL COMMENT 'User UUID',
+--    `email`             VARCHAR(254) NOT NULL COMMENT 'User email',
+--    `password_hash`     VARCHAR(256) NOT NULL COMMENT 'Password encrypted',
+--    `signup_date`       TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date and time signed up',
+--    `verified`          TINYINT NOT NULL DEFAULT 0 COMMENT '0: Email not verified, 1: Email verified',
+--    `last_login`        TIMESTAMP COMMENT 'Date and time of last login',
+--    PRIMARY KEY (`id`),
+--    UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE
+-- ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='Users';
 
 -- #################################
 -- ##   Permission Management     ##

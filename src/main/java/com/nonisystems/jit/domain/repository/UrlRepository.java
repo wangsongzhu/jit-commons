@@ -12,6 +12,13 @@ import java.util.Optional;
 public interface UrlRepository extends JpaRepository<UrlEntity, String>, JpaSpecificationExecutor<UrlEntity> {
 
     /**
+     * Check if short url exists
+     * @param shortUrl short url
+     * @return true if exists, false otherwise
+     */
+    boolean existsByShortUrl(String shortUrl);
+
+    /**
      * Find url by id and user id
      *
      * @param id     url id

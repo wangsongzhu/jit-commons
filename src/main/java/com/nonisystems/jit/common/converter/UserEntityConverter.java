@@ -23,27 +23,23 @@ public class UserEntityConverter {
         User user = new User();
         BeanUtils.copyProperties(userEntity, user);
 
-        Set<RoleEntity> roleEntities = userEntity.getRoles();
-        if (roleEntities != null && !roleEntities.isEmpty()) {
-            Set<Role> roles = new HashSet<>();
-            for (RoleEntity roleEntity : roleEntities) {
-                Role role = new Role();
-                role.setName(roleEntity.getName());
+        RoleEntity roleEntity = userEntity.getRole();
+        if (roleEntity != null) {
+            Role role = new Role();
+            role.setName(roleEntity.getName());
 
-                Set<PermissionEntity> permissionEntities = roleEntity.getPermissions();
-                if (permissionEntities != null && !permissionEntities.isEmpty()) {
-                    Set<Permission> permissions = new HashSet<>();
-                    for (PermissionEntity permissionEntity : permissionEntities) {
-                        Permission permission = new Permission();
-                        permission.setName(permissionEntity.getName());
-                        permissions.add(permission);
-                    }
-                    role.setPermissions(permissions);
-                }
+//            Set<PermissionEntity> permissionEntities = roleEntity.getPermissions();
+//            if (permissionEntities != null && !permissionEntities.isEmpty()) {
+//                Set<Permission> permissions = new HashSet<>();
+//                for (PermissionEntity permissionEntity : permissionEntities) {
+//                    Permission permission = new Permission();
+//                    permission.setName(permissionEntity.getName());
+//                    permissions.add(permission);
+//                }
+//                role.setPermissions(permissions);
+//            }
 
-                roles.add(role);
-            }
-            user.setRoles(roles);
+            user.setRole(role);
         }
 
         return user;
