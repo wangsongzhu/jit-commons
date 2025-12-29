@@ -16,12 +16,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
-import java.util.Collections;
 import java.util.Optional;
 
 @Service
@@ -34,16 +32,16 @@ public class UserServiceImpl implements UserService {
     private final TagRepository tagRepository;
 
     private final UUIDGenerator uuidGenerator;
-    private final PasswordEncoder passwordEncoder;
+    // private final PasswordEncoder passwordEncoder;
 
     private final UserEntityConverter userEntityConverter;
 
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, TagRepository tagRepository, UUIDGenerator uuidGenerator, PasswordEncoder passwordEncoder, UserEntityConverter userEntityConverter) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, TagRepository tagRepository, UUIDGenerator uuidGenerator, UserEntityConverter userEntityConverter) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tagRepository = tagRepository;
         this.uuidGenerator = uuidGenerator;
-        this.passwordEncoder = passwordEncoder;
+        // this.passwordEncoder = passwordEncoder;
         this.userEntityConverter = userEntityConverter;
     }
 
@@ -107,6 +105,50 @@ public class UserServiceImpl implements UserService {
     /**
      * Sign Up a new User
      *
+     * @param user input user
+     * @return user with generated id
+     * @throws GeneralException 400 or 409
+     */
+    @Transactional
+    @Override
+    public User createUser(User user) throws GeneralException {
+        if (log.isDebugEnabled()) {
+            log.debug("Creating new user {}", user);
+        }
+        if (StringUtils.isBlank(user.getSub())) {
+            throw new GeneralException(400, "validation.subject.required");
+        }
+        if (StringUtils.isBlank(user.getEmail())) {
+            throw new GeneralException(400, "validation.email.required");
+        }
+        // Check if user exists or not (by subject)
+        Optional<UserEntity> userOptional1 = this.userRepository.findBySub(user.getSub());
+        if (userOptional1.isPresent()) {
+            throw new GeneralException(409, "validation.subject.existed");
+        }
+        // Check if user exists or not (by email)
+        Optional<UserEntity> userOptional = this.userRepository.findByEmail(user.getEmail());
+        if (userOptional.isPresent()) {
+            throw new GeneralException(409, "validation.email.existed");
+        }
+
+        // Save user
+        UserEntity userEntity = new UserEntity();
+        userEntity.setSub(user.getSub());
+        userEntity.setEmail(user.getEmail());
+        userEntity.setId(this.uuidGenerator.generateUUID(user.getEmail()));
+        UserEntity savedUserEntity = this.userRepository.save(userEntity);
+        // Get the latest user and return
+        User savedUser = this.userEntityConverter.convert(savedUserEntity);
+        if (log.isDebugEnabled()) {
+            log.debug("Created new user {}", savedUser);
+        }
+        return savedUser;
+    }
+
+    /**
+     * Sign Up a new User
+     *
      * @param user     input user
      * @param roleName role name
      * @return user with generated id
@@ -118,8 +160,16 @@ public class UserServiceImpl implements UserService {
         if (log.isDebugEnabled()) {
             log.debug("Creating new user {}", user);
         }
+        if (StringUtils.isBlank(user.getSub())) {
+            throw new GeneralException(400, "validation.subject.required");
+        }
         if (StringUtils.isBlank(user.getEmail())) {
             throw new GeneralException(400, "validation.email.required");
+        }
+        // Check if user exists or not (by subject)
+        Optional<UserEntity> userOptional1 = this.userRepository.findBySub(user.getSub());
+        if (userOptional1.isPresent()) {
+            throw new GeneralException(409, "validation.subject.existed");
         }
         // Check if user exists or not (by email)
         Optional<UserEntity> userOptional = this.userRepository.findByEmail(user.getEmail());
@@ -133,10 +183,10 @@ public class UserServiceImpl implements UserService {
         }
         // Save user
         UserEntity userEntity = new UserEntity();
+        userEntity.setSub(user.getSub());
         userEntity.setEmail(user.getEmail());
         userEntity.setId(this.uuidGenerator.generateUUID(user.getEmail()));
-        userEntity.setPasswordHash(this.passwordEncoder.encode(user.getPassword()));
-        userEntity.setRoles(Collections.singleton(roleOptional.get()));
+        userEntity.setRole(roleOptional.get());
         UserEntity savedUserEntity = this.userRepository.save(userEntity);
         // Get the latest user and return
         User savedUser = this.userEntityConverter.convert(savedUserEntity);
@@ -144,6 +194,38 @@ public class UserServiceImpl implements UserService {
             log.debug("Created new user {}", savedUser);
         }
         return savedUser;
+    }
+
+    /**
+     * Get a user by user sub
+     *
+     * @param subject user sub of Logto
+     * @throws GeneralException 400
+     */
+    @Override
+    public User getUserBySub(String subject) throws GeneralException {
+        if (log.isDebugEnabled()) {
+            log.debug("Getting user by subject {}", subject);
+        }
+        // Check email
+        if (StringUtils.isBlank(subject)) {
+            throw new GeneralException(400, "validation.subject.required");
+        }
+        // Search user
+        User user = null;
+        Optional<UserEntity> userOptional = this.userRepository.findBySubWithRoleAndPermissions(subject);
+        if (userOptional.isPresent()) {
+            UserEntity userEntity = userOptional.get();
+            if (log.isDebugEnabled()) {
+                log.debug("Found userEntity {}", userEntity.getEmail());
+            }
+            user = this.userEntityConverter.convert(userEntity);
+            if (log.isDebugEnabled()) {
+                log.debug("Found user {}", user);
+            }
+        }
+
+        return user;
     }
 
     /**
@@ -161,75 +243,77 @@ public class UserServiceImpl implements UserService {
         if (StringUtils.isBlank(email)) {
             throw new GeneralException(400, "validation.email.required");
         }
-        // Check if user existing
-        Optional<UserEntity> userOptional = this.userRepository.findByEmailWithRolesAndPermissions(email);
-        UserEntity userEntity = userOptional.orElseThrow(() ->
-                new GeneralException(404, "validation.email.not_found"));
-        if (log.isDebugEnabled()) {
-            log.debug("Found userEntity {}", userEntity);
+        // Search user
+        User user = null;
+        Optional<UserEntity> userOptional = this.userRepository.findByEmailWithRoleAndPermissions(email);
+        if (userOptional.isPresent()) {
+            UserEntity userEntity = userOptional.get();
+            if (log.isDebugEnabled()) {
+                log.debug("Found userEntity {}", userEntity.getEmail());
+            }
+            user = this.userEntityConverter.convert(userEntity);
+            if (log.isDebugEnabled()) {
+                log.debug("Found user {}", user);
+            }
         }
-        // Return user
-        User user = this.userEntityConverter.convert(userEntity);
-        if (log.isDebugEnabled()) {
-            log.debug("Found user {}", user);
-        }
+
         return user;
     }
 
-    /**
-     * Update verified flag of a user
-     *
-     * @param email User email
-     * @throws GeneralException 400, 404
-     */
-    @Transactional
-    @Override
-    public void updateUserVerified(String email) throws GeneralException {
-        if (log.isDebugEnabled()) {
-            log.debug("Updating user verified status to 1 for {}", email);
-        }
-        // Check id
-        if (StringUtils.isBlank(email)) {
-            throw new GeneralException(400, "validation.email.required");
-        }
-        // Check if user existing
-        Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
-        UserEntity userEntity = userOptional.orElseThrow(() ->
-                new GeneralException(404, "validation.email.not_found"));
-        // Update user
-        userEntity.setVerified((byte) 1);
-        this.userRepository.save(userEntity);
-    }
+//    /**
+//     * Update verified flag of a user
+//     *
+//     * @param email User email
+//     * @throws GeneralException 400, 404
+//     */
+//    @Transactional
+//    @Override
+//    public void updateUserVerified(String email) throws GeneralException {
+//        if (log.isDebugEnabled()) {
+//            log.debug("Updating user verified status to 1 for {}", email);
+//        }
+//        // Check id
+//        if (StringUtils.isBlank(email)) {
+//            throw new GeneralException(400, "validation.email.required");
+//        }
+//        // Check if user existing
+//        Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
+//        UserEntity userEntity = userOptional.orElseThrow(() ->
+//                new GeneralException(404, "validation.email.not_found"));
+//        // Update user
+//        userEntity.setVerified((byte) 1);
+//        this.userRepository.save(userEntity);
+//    }
 
-    /**
-     * Update user's password
-     *
-     * @param email    User email
-     * @param password User password
-     * @throws GeneralException 400, 404
-     */
-    @Transactional
-    @Override
-    public void changePassword(String email, String password) throws GeneralException {
-        if (log.isDebugEnabled()) {
-            log.debug("Updating user {} with password {}", email, password);
-        }
-        // Check id
-        if (StringUtils.isBlank(email)) {
-            throw new GeneralException(400, "validation.email.required");
-        }
-        // Check password
-        if (StringUtils.isBlank(password)) {
-            throw new GeneralException(400, "validation.password.required");
-        }
-        // Check if user existing
-        Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
-        UserEntity userEntity = userOptional.orElseThrow(() ->
-                new GeneralException(404, "validation.email.not_found"));
-        // Update user
-        userEntity.setPasswordHash(this.passwordEncoder.encode(password));
-        this.userRepository.save(userEntity);
-    }
+//    /**
+//     * Update user's password
+//     *
+//     * @param email    User email
+//     * @param password User password
+//     * @throws GeneralException 400, 404
+//     */
+//    @Transactional
+//    @Override
+//    public void changePassword(String email, String password) throws GeneralException {
+//        if (log.isDebugEnabled()) {
+//            log.debug("Updating user {} with password {}", email, password);
+//        }
+//        // Check id
+//        if (StringUtils.isBlank(email)) {
+//            throw new GeneralException(400, "validation.email.required");
+//        }
+//        // Check password
+//        if (StringUtils.isBlank(password)) {
+//            throw new GeneralException(400, "validation.password.required");
+//        }
+//        // Check if user existing
+//        Optional<UserEntity> userOptional = this.userRepository.findByEmail(email);
+//        UserEntity userEntity = userOptional.orElseThrow(() ->
+//                new GeneralException(404, "validation.email.not_found"));
+//        // Update user
+//        userEntity.setPasswordHash(this.passwordEncoder.encode(password));
+//        this.userRepository.save(userEntity);
+//    }
 
     /**
      * Create a tag for a user

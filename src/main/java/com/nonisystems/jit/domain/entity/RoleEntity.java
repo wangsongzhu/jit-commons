@@ -35,7 +35,7 @@ public class RoleEntity implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "j_role_permissions",
             joinColumns = @JoinColumn(name = "role_id"),
