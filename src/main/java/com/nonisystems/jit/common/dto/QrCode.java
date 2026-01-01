@@ -27,6 +27,8 @@ public class QrCode implements Serializable {
     private Boolean hasUrl;
     private String urlId;
     private String data;
+    private Boolean useShortUrl;
+    private String originalUrl;
     private String fullShortUrl;
 
     private String foregroundColor;

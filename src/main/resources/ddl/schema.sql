@@ -356,7 +356,7 @@ CREATE TABLE `j_logo` (
 -- j_qr_codes table
 CREATE TABLE `j_qr_codes` (
     `id` VARCHAR(64) NOT NULL,
-    `name` VARCHAR(64) NOT NULL COMMENT 'QR Code name',
+    `name` VARCHAR(256) NOT NULL COMMENT 'QR Code name',
     `user_id` VARCHAR(64) COMMENT 'User ID',
     `width` INT DEFAULT 300 COMMENT 'width',
     `height` INT DEFAULT 300 COMMENT 'height',
@@ -364,6 +364,7 @@ CREATE TABLE `j_qr_codes` (
     `type` VARCHAR(10) DEFAULT 'svg' COMMENT 'type, default svg',
     `has_url` BOOLEAN DEFAULT 0 COMMENT '0: No Short URL, 1: Has Short URL',
     `url_id` VARCHAR(64) COMMENT 'Short URL id if has_url is 1',
+    `use_short_url` BOOLEAN DEFAULT 0 COMMENT '0: Not use Short URL, 1: Use Short URL',
     `data` TEXT COMMENT 'Original URL or short URL if has_url is 1',
     `foreground_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'foreground color including dotsOptions.color, cornersSquareOptions.color and cornersDotOptions.color',
     `background_color` VARCHAR(7) DEFAULT '#FFFFFF' COMMENT 'backgroundOptions.color',

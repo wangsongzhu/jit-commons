@@ -34,7 +34,7 @@ public class QrCodeEntity implements Serializable {
     private String id;
 
     @NotNull
-    @Size(max = 64)
+    @Size(max = 256)
     @Column(name = "name")
     private String name;
 
@@ -64,6 +64,9 @@ public class QrCodeEntity implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "url_id", unique = true, nullable = true)
     private UrlEntity url;
+
+    @Column(name = "use_short_url")
+    private Boolean useShortUrl = false;
 
     @NotNull
     @Size(max = 4096)
