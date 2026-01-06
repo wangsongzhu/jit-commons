@@ -24,17 +24,24 @@ public class Url implements Serializable {
     private String domainUrl;
     private String shortUrl;
     private String fullShortUrl;
-    private String expirationDate;
-    private Boolean clickLimited;
-    private Long clickLimit;
-    private Boolean editable;
-    private Boolean edited;
-    private Boolean passwordProtected;
-    private Boolean showOriginalUrl;
+    private Boolean isShadow;
     private Long clickCount;
-    private Boolean hasQrCode;
     private String created;
     private String modified;
+
+    /** Features */
+    private String expirationDate;
+    private String expirationUpdateTime;
+
+    private Boolean isProtected;
+    private String password;
+    private String protectionUpdateTime;
+
+    private Boolean isHidden;
+    private String hiddenUpdateTime;
+
     private List<Tag> tags = new ArrayList<>();
+
+    private Boolean hasQrCode;
     private QrCode qrCode;
 }

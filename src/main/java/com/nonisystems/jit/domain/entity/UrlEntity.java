@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -24,6 +25,11 @@ import java.util.*;
 @Entity
 @DynamicUpdate
 @Table(name = "j_urls")
+@SecondaryTables({
+        @SecondaryTable(name = "j_urls_expiration", pkJoinColumns = @PrimaryKeyJoinColumn(name = "url_id", referencedColumnName = "id")),
+        @SecondaryTable(name = "j_urls_protection", pkJoinColumns = @PrimaryKeyJoinColumn(name = "url_id", referencedColumnName = "id")),
+        @SecondaryTable(name = "j_urls_hidden", pkJoinColumns = @PrimaryKeyJoinColumn(name = "url_id", referencedColumnName = "id"))
+})
 public class UrlEntity implements Serializable {
 
     @Id
@@ -53,9 +59,34 @@ public class UrlEntity implements Serializable {
     @Column(name = "full_short_url", unique = true)
     private String fullShortUrl;
 
-    @Column(name = "expiration_date")
+    @Column(name = "is_shadow")
+    private Boolean isShadow;
+
+    @Column(name = "click_count")
+    private Long clickCount;
+
+    @Column(table = "j_urls_expiration", name = "expiration_date")
     private LocalDateTime expirationDate;
 
+    @Column(table = "j_urls_expiration", name = "update_time")
+    private LocalDateTime expirationUpdateTime;
+
+    @Column(table = "j_urls_protection", name = "is_protected")
+    private Boolean isProtected;
+
+    @Column(table = "j_urls_protection", name = "password_hash")
+    private String passwordHash;
+
+    @Column(table = "j_urls_protection", name = "update_time")
+    private LocalDateTime protectionUpdateTime;
+
+    @Column(table = "j_urls_hidden", name = "is_hidden")
+    private Boolean isHidden;
+
+    @Column(table = "j_urls_hidden", name = "update_time")
+    private LocalDateTime hiddenUpdateTime;
+
+    /*
     @PrePersist
     public void setExpirationDateIfNull() {
         if (this.expirationDate == null) {
@@ -74,18 +105,7 @@ public class UrlEntity implements Serializable {
 
     @Column(name = "is_edited")
     private Boolean edited;
-
-    @Column(name = "is_password_protected")
-    private Boolean passwordProtected;
-
-    @Column(name = "show_original_url")
-    private Boolean showOriginalUrl;
-
-    @Column(name = "click_count")
-    private Long clickCount;
-
-    @Column(name = "has_qr_code")
-    private Boolean hasQrCode;
+    */
 
     @CreationTimestamp
     @Column(name = "created")
@@ -107,19 +127,20 @@ public class UrlEntity implements Serializable {
      * Click Records information
      */
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "url")
+    @OneToMany(mappedBy = "url", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ClickRecordEntity> clickRecords = new ArrayList<>();
 
     /**
      * URL Tags information
      */
-    @OneToMany(mappedBy = "url", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    @OneToMany(mappedBy = "url", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UrlTagEntity> urlTags = new HashSet<>();
 
     /**
      * QR code
      */
-    @OneToOne(mappedBy = "url", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "url", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private QrCodeEntity qrCode;
 
     /**

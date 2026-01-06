@@ -29,7 +29,7 @@ public interface DomainRepository extends JpaRepository<DomainEntity, String> {
      * @return List<DomainEntity>
      */
     @Query("SELECT d FROM DomainEntity d WHERE d.userId = :userId OR d.id = '0' ORDER BY d.isActive DESC, d.id DESC")
-    List<DomainEntity> findByUserIdWithDefault(@Param("userId") String userId);
+    List<DomainEntity> findByUserIdWithDefault(@Param("userId") String userId, Sort sort);
 
     /**
      * Find all the domains by User ID (for sorting)

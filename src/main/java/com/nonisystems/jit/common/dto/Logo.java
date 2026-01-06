@@ -19,6 +19,7 @@ public class Logo implements Serializable {
     private String url;
     private String fileName;
     private String fileKey;
+    private int qrCodeCount;
     private String created;
     private String modified;
 }

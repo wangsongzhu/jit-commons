@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,4 +73,20 @@ public interface TagRepository extends JpaRepository<TagEntity, String>, JpaSpec
      * @return true if exists, false otherwise
      */
     boolean existsByUser_IdAndName(String userId, String name);
+
+    /**
+     * Get tagged url count by tag id
+     * @param tagId tag id
+     * @return taggedUrlCount
+     */
+    @Query("SELECT COUNT(ut) FROM UrlTagEntity ut WHERE ut.tag.id = :tagId")
+    int countUrlsByTagId(@Param("tagId") String tagId);
+
+    /**
+     * Get tagged QR Code count by tag id
+     * @param tagId tag id
+     * @return taggedQrCount
+     */
+    @Query("SELECT COUNT(qt) FROM QrCodeTagEntity qt WHERE qt.tag.id = :tagId")
+    int countQrCodesByTagId(@Param("tagId") String tagId);
 }

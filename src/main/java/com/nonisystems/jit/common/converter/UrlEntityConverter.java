@@ -35,15 +35,12 @@ public class UrlEntityConverter {
 
         Url url = new Url();
         log.debug("copy properties from url entity to url: {}", urlEntity.getId());
-        BeanUtils.copyProperties(urlEntity, url);
+        BeanUtils.copyProperties(urlEntity, url, "passwordHash");
         url.setOriginalDomain(Util.extractDomain(urlEntity.getOriginalUrl()));
         log.debug("complete copying properties from url entity to url");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
-        if (urlEntity.getExpirationDate() != null) {
-            url.setExpirationDate(urlEntity.getExpirationDate().format(formatter));
-            log.debug("expirationDate: {}", url.getExpirationDate());
-        }
+
         if (urlEntity.getCreated() != null) {
             url.setCreated(urlEntity.getCreated().toLocalDateTime().format(formatter));
             log.debug("created: {}", url.getCreated());
@@ -51,6 +48,23 @@ public class UrlEntityConverter {
         if (urlEntity.getModified() != null) {
             url.setModified(urlEntity.getModified().toLocalDateTime().format(formatter));
             log.debug("modified: {}", url.getModified());
+        }
+
+        if (urlEntity.getExpirationDate() != null) {
+            url.setExpirationDate(urlEntity.getExpirationDate().format(formatter));
+            log.debug("expirationDate: {}", url.getExpirationDate());
+        }
+        if (urlEntity.getExpirationUpdateTime() != null) {
+            url.setExpirationUpdateTime(urlEntity.getExpirationUpdateTime().format(formatter));
+            log.debug("expirationUpdateTime: {}", url.getExpirationUpdateTime());
+        }
+        if (urlEntity.getProtectionUpdateTime() != null) {
+            url.setProtectionUpdateTime(urlEntity.getProtectionUpdateTime().format(formatter));
+            log.debug("protectionUpdateTime: {}", url.getProtectionUpdateTime());
+        }
+        if (urlEntity.getHiddenUpdateTime() != null) {
+            url.setHiddenUpdateTime(urlEntity.getHiddenUpdateTime().format(formatter));
+            log.debug("hiddenUpdateTime: {}", url.getHiddenUpdateTime());
         }
 
         List<Tag> tags = new ArrayList<>();

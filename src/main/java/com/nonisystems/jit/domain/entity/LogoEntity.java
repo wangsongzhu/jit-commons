@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
@@ -55,6 +56,9 @@ public class LogoEntity implements Serializable {
     @Size(max = 64)
     @Column(name = "file_key")
     private String fileKey;
+
+    @Formula("(SELECT COUNT(*) FROM j_qr_codes q WHERE q.logo_id = id)")
+    private int qrCodeCount;
 
     @CreationTimestamp
     @Column(name = "created")

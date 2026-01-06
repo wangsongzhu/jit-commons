@@ -26,8 +26,10 @@ public class QrCode implements Serializable {
 
     private Boolean hasUrl;
     private String urlId;
-    private String data;
-    private Boolean useShortUrl;
+    private Boolean createUrl;
+    private String selectedDomain;
+    private String data;// short URL with ?r=qr, or original URL
+    private Boolean isManaged;
     private String originalUrl;
     private String fullShortUrl;
 
@@ -41,6 +43,8 @@ public class QrCode implements Serializable {
 
     private Boolean useLogo;
     private String logoId;
+    private String logoShape;
+    private BigDecimal marginRatio;
     private Boolean imageOptionsHideBackgroundDots;
     private BigDecimal imageOptionsSize;
     private Integer imageOptionsMargin;
