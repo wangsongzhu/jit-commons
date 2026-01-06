@@ -77,11 +77,12 @@ CREATE TABLE `j_role_permissions` (
 
 -- Master data
 INSERT INTO `j_roles` (`id`, `name`, `description`) VALUES
-(10, 'ROLE_FREE', 'Free'),
-(20, 'ROLE_STANDARD', 'Standard'),
-(30, 'ROLE_PREMIER', 'Premier'),
-(40, 'ROLE_PLATINUM', 'Platinum'),
-(999, 'ROLE_ORG_ADMIN', 'Super Administrator');
+(100, 'FREE', 'Free'),
+(200, 'STANDARD', 'Standard'),
+(300, 'PREMIER', 'Premier'),
+(400, 'PLATINUM', 'Platinum'),
+(500, 'ENTERPRISE', 'Enterprise'),
+(999, 'ORG_ADMIN', 'Super Administrator');
 
 INSERT INTO `j_permissions` (`id`, `name`, `description`) VALUES
 (10, 'P010', 'QR Codes, attibute: number/month'),
@@ -105,94 +106,117 @@ INSERT INTO `j_permissions` (`id`, `name`, `description`) VALUES
 (190, 'P190', 'Device type click scan data'),
 (200, 'P200', 'Mobile deep linking');
 
--- ROLE_FREE Role permissions mapping
+-- FREE Role permissions mapping
 INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P060'));
+((SELECT id FROM `j_roles` WHERE name = 'FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
+((SELECT id FROM `j_roles` WHERE name = 'FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
+((SELECT id FROM `j_roles` WHERE name = 'FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
+((SELECT id FROM `j_roles` WHERE name = 'FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
+((SELECT id FROM `j_roles` WHERE name = 'FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
+((SELECT id FROM `j_roles` WHERE name = 'FREE'), (SELECT id FROM `j_permissions` WHERE name = 'P060'));
 
--- ROLE_STANDARD Role permissions mapping
+-- STANDARD Role permissions mapping
 INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P120'));
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
+((SELECT id FROM `j_roles` WHERE name = 'STANDARD'), (SELECT id FROM `j_permissions` WHERE name = 'P120'));
 
--- ROLE_PREMIER Role permissions mapping
+-- PREMIER Role permissions mapping
 INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P160'));
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
+((SELECT id FROM `j_roles` WHERE name = 'PREMIER'), (SELECT id FROM `j_permissions` WHERE name = 'P160'));
 
--- ROLE_PLATINUM Role permissions mapping
+-- PLATINUM Role permissions mapping
 INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P160')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P170')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P180')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P190')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P160')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P170')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P180')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P190')),
+((SELECT id FROM `j_roles` WHERE name = 'PLATINUM'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
 
--- ROLE_ORG_ADMIN Role permissions mapping
+-- ENTERPRISE Role permissions mapping
 INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P160')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P170')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P180')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P190')),
-((SELECT id FROM `j_roles` WHERE name = 'ROLE_ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P160')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P170')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P180')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P190')),
+((SELECT id FROM `j_roles` WHERE name = 'ENTERPRISE'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
+
+-- ORG_ADMIN Role permissions mapping
+INSERT INTO `j_role_permissions` (`role_id`, `permission_id`) VALUES
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P010')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P020')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P030')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P040')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P050')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P060')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P070')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P080')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P090')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P100')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P110')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P120')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P130')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P140')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P150')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P160')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P170')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P180')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P190')),
+((SELECT id FROM `j_roles` WHERE name = 'ORG_ADMIN'), (SELECT id FROM `j_permissions` WHERE name = 'P200'));
 
 -- #################################
 -- ##      Short URL Domains      ##
@@ -231,19 +255,12 @@ CREATE TABLE `j_urls`
     `id`                    VARCHAR(64) NOT NULL,
     `user_id`               VARCHAR(64) COMMENT 'User ID',
     `title`                 VARCHAR(256) COMMENT 'title or header of target URL page',
-    `original_url`          TEXT        NOT NULL COMMENT 'Original URL',
+    `original_url`          TEXT NOT NULL COMMENT 'Original URL',
     `domain_url_id`         VARCHAR(64) COMMENT 'Domain URL ID',
     `short_url`             VARCHAR(10) NOT NULL COMMENT 'Short part of short URL',
     `full_short_url`        VARCHAR(138) NOT NULL COMMENT 'Full short URL',
-    `expiration_date`       DATETIME  NOT NULL DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
-    `is_click_limited`      BOOLEAN   DEFAULT 0 COMMENT '0: Not limited, 1: Click limited',
-    `click_limit`           INT NULL DEFAULT 0 COMMENT 'Click limit of URL',
-    `editable`              BOOLEAN   DEFAULT 0 COMMENT '0: Not editable, 1: Editable',
-    `is_edited`             BOOLEAN   DEFAULT 0 COMMENT '0: Not edited, 1: Edited',
-    `is_password_protected` BOOLEAN   DEFAULT 0 COMMENT '0: Not password protected, 1: Password protected',
-    `show_original_url`     BOOLEAN   DEFAULT 0 COMMENT '0: Hide original URL, 1: Show original URL',
+    `is_shadow`             BOOLEAN DEFAULT 0 COMMENT '0: Not shadow, 1: Shadow URL(Only QRCode generated)',
     `click_count`           INT NULL DEFAULT 0 COMMENT 'Clicked count',
-    `has_qr_code`           BOOLEAN   DEFAULT 0 COMMENT '0: No QR Code, 1: Has QR Code',
     `created`               TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Created date and time',
     `modified`              TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
@@ -261,6 +278,47 @@ CREATE TABLE `j_urls`
             ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4 COLLATE=UTF8MB4_GENERAL_CI COMMENT='URL table';
 
+-- j_urls_expiration table
+CREATE TABLE `j_urls_expiration` (
+    `url_id` VARCHAR(64) NOT NULL,
+    `expiration_date` DATETIME NOT NULL DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`url_id`),
+    CONSTRAINT `j_urls_expiration_url_id_FK` FOREIGN KEY (`url_id`)
+        REFERENCES `j_urls` (`id`)
+        ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='URL features expiration table';
+
+-- j_urls_protection table
+CREATE TABLE `j_urls_protection` (
+    `url_id` VARCHAR(64) NOT NULL,
+    `is_protected` BOOLEAN DEFAULT 0 COMMENT '0: Not password protected, 1: Password protected',
+    `password_hash` VARCHAR(256) NOT NULL COMMENT 'Password encrypted',
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`url_id`),
+    CONSTRAINT `j_urls_protection_url_id_FK` FOREIGN KEY (`url_id`)
+        REFERENCES `j_urls` (`id`)
+        ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='URL features password protection table';
+
+-- j_urls_hidden table
+CREATE TABLE `j_urls_hidden` (
+    `url_id` VARCHAR(64) NOT NULL,
+    `is_hidden` BOOLEAN DEFAULT 0 COMMENT '0: Show original URL, 1: Hide original URL',
+    `update_time` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`url_id`),
+    CONSTRAINT `j_urls_hidden_url_id_FK` FOREIGN KEY (`url_id`)
+        REFERENCES `j_urls` (`id`)
+        ON DELETE CASCADE
+)  ENGINE=INNODB DEFAULT CHARSET=UTF8MB4 COLLATE = UTF8MB4_GENERAL_CI COMMENT='URL features hide original URL table';
+
+--    `expiration_date`       DATETIME  NOT NULL DEFAULT '9999-12-31 23:59:59' COMMENT 'Expiration date of URL',
+--    `is_click_limited`      BOOLEAN   DEFAULT 0 COMMENT '0: Not limited, 1: Click limited',
+--    `click_limit`           INT NULL DEFAULT 0 COMMENT 'Click limit of URL',
+--    `editable`              BOOLEAN   DEFAULT 0 COMMENT '0: Not editable, 1: Editable', x
+--    `is_edited`             BOOLEAN   DEFAULT 0 COMMENT '0: Not edited, 1: Edited',
+--    `is_password_protected` BOOLEAN   DEFAULT 0 COMMENT '0: Not password protected, 1: Password protected',
+--    `show_original_url`     BOOLEAN   DEFAULT 0 COMMENT '0: Hide original URL, 1: Show original URL',
 
 -- j_click_records table
 CREATE TABLE `j_click_records`
@@ -364,7 +422,7 @@ CREATE TABLE `j_qr_codes` (
     `type` VARCHAR(10) DEFAULT 'svg' COMMENT 'type, default svg',
     `has_url` BOOLEAN DEFAULT 0 COMMENT '0: No Short URL, 1: Has Short URL',
     `url_id` VARCHAR(64) COMMENT 'Short URL id if has_url is 1',
-    `use_short_url` BOOLEAN DEFAULT 0 COMMENT '0: Not use Short URL, 1: Use Short URL',
+    `is_managed` BOOLEAN DEFAULT 0 COMMENT '0: Not managed, 1: Managed',
     `data` TEXT COMMENT 'Original URL or short URL if has_url is 1',
     `foreground_color` VARCHAR(7) DEFAULT '#000000' COMMENT 'foreground color including dotsOptions.color, cornersSquareOptions.color and cornersDotOptions.color',
     `background_color` VARCHAR(7) DEFAULT '#FFFFFF' COMMENT 'backgroundOptions.color',
@@ -374,8 +432,10 @@ CREATE TABLE `j_qr_codes` (
     `border_radius` INT DEFAULT 0 COMMENT 'border radius: 0 to 40',
     `use_logo` BOOLEAN DEFAULT 0 COMMENT '0: no logo, 1: use logo',
     `logo_id` VARCHAR(64) COMMENT 'Logo file id',
+    `logo_shape` VARCHAR(1) COMMENT '0: square. 1: circle',
+    `margin_ratio` DECIMAL(3, 2) DEFAULT 0.85 COMMENT 'safetyMarginRatio: 0.4, 0.45, ..., 0.85, 0.9, 0.95, 1.0',
     `image_options_hide_background_dots` BOOLEAN DEFAULT 1 COMMENT 'imageOptions.hideBackgroundDots: 0: false/Show background dots, 1: true/Hide background dots',
-    `image_options_size` DECIMAL(2 , 1 ) DEFAULT 0.4 COMMENT 'imageOptions.imageSize: 0.5, 0.4, 0.3, 0.1',
+    `image_options_size` DECIMAL(2 , 1) DEFAULT 0.4 COMMENT 'imageOptions.imageSize: 0.5, 0.4, 0.3, 0.1',
     `image_options_margin` INT DEFAULT 10 COMMENT 'imageOptions.margin: 0 to 20',
     `image_options_cross_origin` VARCHAR(15) DEFAULT 'anonymous' COMMENT 'imageOptions.crossOrigin: anonymous, use-credentials',
     `type_number` INT DEFAULT 0 COMMENT 'qrOptions.typeNumber: 0 to 40',

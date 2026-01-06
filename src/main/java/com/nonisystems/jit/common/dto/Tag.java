@@ -15,6 +15,8 @@ public class Tag implements Serializable {
 
     private String id;
     private String name;
+    private int taggedUrlCount;
+    private int taggedQrCodeCount;
     private String created;
     private String modified;
 }

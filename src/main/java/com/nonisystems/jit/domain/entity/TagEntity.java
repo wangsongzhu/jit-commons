@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
@@ -45,6 +46,18 @@ public class TagEntity implements Serializable {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private UserEntity user;
 
+    /**
+     * Tagged url count
+     */
+    @Formula("(SELECT COUNT(*) FROM j_url_tag ut WHERE ut.tag_id = id)")
+    private int taggedUrlCount;
+
+    /**
+     * Tagged QR Code count
+     */
+    @Formula("(SELECT COUNT(*) FROM j_qr_code_tag qt WHERE qt.tag_id = id)")
+    private int taggedQrCodeCount;
+
     @CreationTimestamp
     @Column(name = "created")
     private Timestamp created;
@@ -57,14 +70,14 @@ public class TagEntity implements Serializable {
      * URL Tags information
      */
     @JsonIgnore
-    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UrlTagEntity> urlTags = new HashSet<>();
 
     /**
      * QRCode Tags information
      */
     @JsonIgnore
-    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "tag", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<QrCodeTagEntity> qrCodeTags = new HashSet<>();
 
     @Override

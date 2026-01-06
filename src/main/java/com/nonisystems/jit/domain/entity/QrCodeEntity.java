@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -65,8 +66,8 @@ public class QrCodeEntity implements Serializable {
     @JoinColumn(name = "url_id", unique = true, nullable = true)
     private UrlEntity url;
 
-    @Column(name = "use_short_url")
-    private Boolean useShortUrl = false;
+    @Column(name = "is_managed")
+    private Boolean isManaged = false;
 
     @NotNull
     @Size(max = 4096)
@@ -101,8 +102,15 @@ public class QrCodeEntity implements Serializable {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "logo_id", updatable = false)
+    @JoinColumn(name = "logo_id", updatable = true)
     private LogoEntity logo;
+
+    @Size(max = 1)
+    @Column(name = "logo_shape")
+    private String logoShape = "0";
+
+    @Column(name = "margin_ratio", precision = 3, scale = 2)
+    private BigDecimal marginRatio = new BigDecimal("0.85");
 
     @Column(name = "image_options_hide_background_dots")
     private Boolean imageOptionsHideBackgroundDots = true;
@@ -243,7 +251,8 @@ public class QrCodeEntity implements Serializable {
     /**
      * QRCode Tags information
      */
-    @OneToMany(mappedBy = "qrCode", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @BatchSize(size = 50)
+    @OneToMany(mappedBy = "qrCode", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<QrCodeTagEntity> qrCodeTags = new HashSet<>();
 
     @Override

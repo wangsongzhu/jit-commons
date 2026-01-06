@@ -27,13 +27,16 @@ public class QrCodeEntityConverter {
 
         UrlEntity urlEntity = qrCodeEntity.getUrl();
         if (urlEntity != null) {
-            qrCode.setHasUrl(true);
-            qrCode.setUrlId(urlEntity.getId());
-            qrCode.setFullShortUrl(urlEntity.getFullShortUrl());
-            if (qrCodeEntity.getUseShortUrl() != null && qrCodeEntity.getUseShortUrl()) {
-                qrCode.setOriginalUrl(urlEntity.getOriginalUrl());
+            if (urlEntity.getIsShadow()) {
+                qrCode.setHasUrl(false);
+            } else {
+                qrCode.setHasUrl(true);
+                qrCode.setUrlId(urlEntity.getId());
             }
+            qrCode.setOriginalUrl(urlEntity.getOriginalUrl());
+            qrCode.setFullShortUrl(urlEntity.getFullShortUrl());
         } else {
+            qrCode.setHasUrl(false);
             qrCode.setOriginalUrl(qrCodeEntity.getData());
         }
 
