@@ -9,7 +9,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -87,28 +86,6 @@ public class GlobalExceptionHandler {
         apiErrors.setMessage(errorMessage);
         apiErrors.setFieldErrors(errors);
         return new ResponseEntity<>(apiErrors, HttpStatus.BAD_REQUEST);
-    }
-
-    /**
-     * Handle AccessDeniedException
-     *
-     * @param ex AccessDeniedException.class
-     * @return ApiErrors
-     */
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<ApiErrors> handleAccessDeniedExceptions(AccessDeniedException ex) {
-        if (log.isDebugEnabled()) {
-            log.debug("AccessDeniedException: {}", ex.toString());
-        }
-        Locale currentLocale = LocaleContextHolder.getLocale();
-        log.debug("currentLocale: {}", currentLocale);
-
-        ApiErrors apiErrors = new ApiErrors();
-        apiErrors.setStatus(HttpStatus.FORBIDDEN.value());
-        apiErrors.setError(HttpStatus.FORBIDDEN.name());
-        String errorMessage = messageSource.getMessage(GlobalConstant.VALIDATION_ACCESS_DENIED, null, currentLocale);
-        apiErrors.setMessage(errorMessage);
-        return new ResponseEntity<>(apiErrors, HttpStatus.FORBIDDEN);
     }
 
     /**
